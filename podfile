@@ -1,0 +1,9 @@
+platform :ios, '7.0'
+
+target :HJDownloadManager do
+
+
+pod 'MJExtension', '~> 3.0.13'
+
+
+end

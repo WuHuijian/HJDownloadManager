@@ -1,0 +1,716 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		55331E06F2B062F904F72984 /* libPods-HJDownloadManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 86F40F027728294F6DE4E62F /* libPods-HJDownloadManager.a */; };
+		D22B7C60204681D90023FB4F /* HJDownloadListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D22B7C5F204681D90023FB4F /* HJDownloadListCell.m */; };
+		D23BF455204536DB00F10BF6 /* HJDownloadHome_VC.m in Sources */ = {isa = PBXBuildFile; fileRef = D23BF454204536DB00F10BF6 /* HJDownloadHome_VC.m */; };
+		D23BF458204536E700F10BF6 /* HJDownloadList_VC.m in Sources */ = {isa = PBXBuildFile; fileRef = D23BF457204536E700F10BF6 /* HJDownloadList_VC.m */; };
+		D23BF45B204539C800F10BF6 /* HJDownloadTabBar_VC.m in Sources */ = {isa = PBXBuildFile; fileRef = D23BF45A204539C800F10BF6 /* HJDownloadTabBar_VC.m */; };
+		D23BF45E2045446800F10BF6 /* HJDownloadHomeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D23BF45D2045446800F10BF6 /* HJDownloadHomeCell.m */; };
+		D23BF461204545D000F10BF6 /* HJBaseDownloadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D23BF460204545D000F10BF6 /* HJBaseDownloadCell.m */; };
+		D23BF464204645F600F10BF6 /* HJExampleModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D23BF463204645F600F10BF6 /* HJExampleModel.m */; };
+		D23BF47020464EC100F10BF6 /* HJDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D23BF46720464EC000F10BF6 /* HJDownloadManager.m */; };
+		D23BF47120464EC100F10BF6 /* NSURLSessionTask+HJModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D23BF46820464EC000F10BF6 /* NSURLSessionTask+HJModel.m */; };
+		D23BF47220464EC100F10BF6 /* HJDownloadOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = D23BF46920464EC000F10BF6 /* HJDownloadOperation.m */; };
+		D23BF47320464EC100F10BF6 /* HJDownloadModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D23BF46B20464EC000F10BF6 /* HJDownloadModel.m */; };
+		D2A58315203D3CCA008693D1 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D2A58314203D3CCA008693D1 /* AppDelegate.m */; };
+		D2A5831D203D3CCA008693D1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D2A5831C203D3CCA008693D1 /* Assets.xcassets */; };
+		D2A58323203D3CCA008693D1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D2A58322203D3CCA008693D1 /* main.m */; };
+		D2A5832D203D3CCA008693D1 /* HJDownloadManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D2A5832C203D3CCA008693D1 /* HJDownloadManagerTests.m */; };
+		D2A58338203D3CCA008693D1 /* HJDownloadManagerUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = D2A58337203D3CCA008693D1 /* HJDownloadManagerUITests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D2A58329203D3CCA008693D1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D2A58308203D3CCA008693D1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2A5830F203D3CCA008693D1;
+			remoteInfo = HJDownloadManager;
+		};
+		D2A58334203D3CCA008693D1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D2A58308203D3CCA008693D1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2A5830F203D3CCA008693D1;
+			remoteInfo = HJDownloadManager;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		3314216F1908E863147F4701 /* Pods-HJDownloadManager.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HJDownloadManager.release.xcconfig"; path = "Pods/Target Support Files/Pods-HJDownloadManager/Pods-HJDownloadManager.release.xcconfig"; sourceTree = "<group>"; };
+		86F40F027728294F6DE4E62F /* libPods-HJDownloadManager.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HJDownloadManager.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		951F108E05DA06B3FAFF847E /* Pods-HJDownloadManager.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HJDownloadManager.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HJDownloadManager/Pods-HJDownloadManager.debug.xcconfig"; sourceTree = "<group>"; };
+		D22B7C5E204681D90023FB4F /* HJDownloadListCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HJDownloadListCell.h; sourceTree = "<group>"; };
+		D22B7C5F204681D90023FB4F /* HJDownloadListCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HJDownloadListCell.m; sourceTree = "<group>"; };
+		D23BF453204536DB00F10BF6 /* HJDownloadHome_VC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HJDownloadHome_VC.h; sourceTree = "<group>"; };
+		D23BF454204536DB00F10BF6 /* HJDownloadHome_VC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HJDownloadHome_VC.m; sourceTree = "<group>"; };
+		D23BF456204536E700F10BF6 /* HJDownloadList_VC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HJDownloadList_VC.h; sourceTree = "<group>"; };
+		D23BF457204536E700F10BF6 /* HJDownloadList_VC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HJDownloadList_VC.m; sourceTree = "<group>"; };
+		D23BF459204539C800F10BF6 /* HJDownloadTabBar_VC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HJDownloadTabBar_VC.h; sourceTree = "<group>"; };
+		D23BF45A204539C800F10BF6 /* HJDownloadTabBar_VC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HJDownloadTabBar_VC.m; sourceTree = "<group>"; };
+		D23BF45C2045446800F10BF6 /* HJDownloadHomeCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HJDownloadHomeCell.h; sourceTree = "<group>"; };
+		D23BF45D2045446800F10BF6 /* HJDownloadHomeCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HJDownloadHomeCell.m; sourceTree = "<group>"; };
+		D23BF45F204545D000F10BF6 /* HJBaseDownloadCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HJBaseDownloadCell.h; sourceTree = "<group>"; };
+		D23BF460204545D000F10BF6 /* HJBaseDownloadCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HJBaseDownloadCell.m; sourceTree = "<group>"; };
+		D23BF462204645F600F10BF6 /* HJExampleModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HJExampleModel.h; sourceTree = "<group>"; };
+		D23BF463204645F600F10BF6 /* HJExampleModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HJExampleModel.m; sourceTree = "<group>"; };
+		D23BF46620464EC000F10BF6 /* HJDownloadModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HJDownloadModel.h; sourceTree = "<group>"; };
+		D23BF46720464EC000F10BF6 /* HJDownloadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HJDownloadManager.m; sourceTree = "<group>"; };
+		D23BF46820464EC000F10BF6 /* NSURLSessionTask+HJModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURLSessionTask+HJModel.m"; sourceTree = "<group>"; };
+		D23BF46920464EC000F10BF6 /* HJDownloadOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HJDownloadOperation.m; sourceTree = "<group>"; };
+		D23BF46A20464EC000F10BF6 /* HJDownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HJDownloadManager.h; sourceTree = "<group>"; };
+		D23BF46B20464EC000F10BF6 /* HJDownloadModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HJDownloadModel.m; sourceTree = "<group>"; };
+		D23BF46C20464EC000F10BF6 /* HJDownloadHeaders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HJDownloadHeaders.h; sourceTree = "<group>"; };
+		D23BF46D20464EC000F10BF6 /* NSURLSessionTask+HJModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLSessionTask+HJModel.h"; sourceTree = "<group>"; };
+		D23BF46F20464EC000F10BF6 /* HJDownloadOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HJDownloadOperation.h; sourceTree = "<group>"; };
+		D23BF4742046502700F10BF6 /* HJDownloadConst.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HJDownloadConst.h; sourceTree = "<group>"; };
+		D2A58310203D3CCA008693D1 /* HJDownloadManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HJDownloadManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D2A58313203D3CCA008693D1 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		D2A58314203D3CCA008693D1 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		D2A5831C203D3CCA008693D1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		D2A58321203D3CCA008693D1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D2A58322203D3CCA008693D1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		D2A58328203D3CCA008693D1 /* HJDownloadManagerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HJDownloadManagerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D2A5832C203D3CCA008693D1 /* HJDownloadManagerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HJDownloadManagerTests.m; sourceTree = "<group>"; };
+		D2A5832E203D3CCA008693D1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D2A58333203D3CCA008693D1 /* HJDownloadManagerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HJDownloadManagerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D2A58337203D3CCA008693D1 /* HJDownloadManagerUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HJDownloadManagerUITests.m; sourceTree = "<group>"; };
+		D2A58339203D3CCA008693D1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D2A5830D203D3CCA008693D1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				55331E06F2B062F904F72984 /* libPods-HJDownloadManager.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2A58325203D3CCA008693D1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2A58330203D3CCA008693D1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		9F5FBC2C5A7E4B85C59754BD /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				86F40F027728294F6DE4E62F /* libPods-HJDownloadManager.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D23BF44C204535DA00F10BF6 /* ExampleDemo */ = {
+			isa = PBXGroup;
+			children = (
+				D23BF44E2045365500F10BF6 /* Controllers */,
+				D23BF44D2045365500F10BF6 /* Models */,
+				D23BF44F2045365500F10BF6 /* Views */,
+			);
+			path = ExampleDemo;
+			sourceTree = "<group>";
+		};
+		D23BF44D2045365500F10BF6 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				D23BF462204645F600F10BF6 /* HJExampleModel.h */,
+				D23BF463204645F600F10BF6 /* HJExampleModel.m */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		D23BF44E2045365500F10BF6 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				D23BF453204536DB00F10BF6 /* HJDownloadHome_VC.h */,
+				D23BF454204536DB00F10BF6 /* HJDownloadHome_VC.m */,
+				D23BF456204536E700F10BF6 /* HJDownloadList_VC.h */,
+				D23BF457204536E700F10BF6 /* HJDownloadList_VC.m */,
+				D23BF459204539C800F10BF6 /* HJDownloadTabBar_VC.h */,
+				D23BF45A204539C800F10BF6 /* HJDownloadTabBar_VC.m */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		D23BF44F2045365500F10BF6 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				D23BF45C2045446800F10BF6 /* HJDownloadHomeCell.h */,
+				D23BF45D2045446800F10BF6 /* HJDownloadHomeCell.m */,
+				D23BF45F204545D000F10BF6 /* HJBaseDownloadCell.h */,
+				D23BF460204545D000F10BF6 /* HJBaseDownloadCell.m */,
+				D22B7C5E204681D90023FB4F /* HJDownloadListCell.h */,
+				D22B7C5F204681D90023FB4F /* HJDownloadListCell.m */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		D23BF46520464EC000F10BF6 /* HJDownloadClass */ = {
+			isa = PBXGroup;
+			children = (
+				D23BF46620464EC000F10BF6 /* HJDownloadModel.h */,
+				D23BF46B20464EC000F10BF6 /* HJDownloadModel.m */,
+				D23BF46A20464EC000F10BF6 /* HJDownloadManager.h */,
+				D23BF46720464EC000F10BF6 /* HJDownloadManager.m */,
+				D23BF46D20464EC000F10BF6 /* NSURLSessionTask+HJModel.h */,
+				D23BF46820464EC000F10BF6 /* NSURLSessionTask+HJModel.m */,
+				D23BF46C20464EC000F10BF6 /* HJDownloadHeaders.h */,
+				D23BF46F20464EC000F10BF6 /* HJDownloadOperation.h */,
+				D23BF46920464EC000F10BF6 /* HJDownloadOperation.m */,
+				D23BF4742046502700F10BF6 /* HJDownloadConst.h */,
+			);
+			path = HJDownloadClass;
+			sourceTree = "<group>";
+		};
+		D2A58307203D3CCA008693D1 = {
+			isa = PBXGroup;
+			children = (
+				D2A58312203D3CCA008693D1 /* HJDownloadManager */,
+				D2A5832B203D3CCA008693D1 /* HJDownloadManagerTests */,
+				D2A58336203D3CCA008693D1 /* HJDownloadManagerUITests */,
+				D2A58311203D3CCA008693D1 /* Products */,
+				E4DEE19BF55756ABC6D68D24 /* Pods */,
+				9F5FBC2C5A7E4B85C59754BD /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		D2A58311203D3CCA008693D1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D2A58310203D3CCA008693D1 /* HJDownloadManager.app */,
+				D2A58328203D3CCA008693D1 /* HJDownloadManagerTests.xctest */,
+				D2A58333203D3CCA008693D1 /* HJDownloadManagerUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D2A58312203D3CCA008693D1 /* HJDownloadManager */ = {
+			isa = PBXGroup;
+			children = (
+				D23BF46520464EC000F10BF6 /* HJDownloadClass */,
+				D23BF44C204535DA00F10BF6 /* ExampleDemo */,
+				D2A58313203D3CCA008693D1 /* AppDelegate.h */,
+				D2A58314203D3CCA008693D1 /* AppDelegate.m */,
+				D2A5831C203D3CCA008693D1 /* Assets.xcassets */,
+				D2A58321203D3CCA008693D1 /* Info.plist */,
+				D2A58322203D3CCA008693D1 /* main.m */,
+			);
+			path = HJDownloadManager;
+			sourceTree = "<group>";
+		};
+		D2A5832B203D3CCA008693D1 /* HJDownloadManagerTests */ = {
+			isa = PBXGroup;
+			children = (
+				D2A5832C203D3CCA008693D1 /* HJDownloadManagerTests.m */,
+				D2A5832E203D3CCA008693D1 /* Info.plist */,
+			);
+			path = HJDownloadManagerTests;
+			sourceTree = "<group>";
+		};
+		D2A58336203D3CCA008693D1 /* HJDownloadManagerUITests */ = {
+			isa = PBXGroup;
+			children = (
+				D2A58337203D3CCA008693D1 /* HJDownloadManagerUITests.m */,
+				D2A58339203D3CCA008693D1 /* Info.plist */,
+			);
+			path = HJDownloadManagerUITests;
+			sourceTree = "<group>";
+		};
+		E4DEE19BF55756ABC6D68D24 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				951F108E05DA06B3FAFF847E /* Pods-HJDownloadManager.debug.xcconfig */,
+				3314216F1908E863147F4701 /* Pods-HJDownloadManager.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D2A5830F203D3CCA008693D1 /* HJDownloadManager */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D2A5833C203D3CCA008693D1 /* Build configuration list for PBXNativeTarget "HJDownloadManager" */;
+			buildPhases = (
+				566F31C0D70AF1C837B1083A /* [CP] Check Pods Manifest.lock */,
+				D2A5830C203D3CCA008693D1 /* Sources */,
+				D2A5830D203D3CCA008693D1 /* Frameworks */,
+				D2A5830E203D3CCA008693D1 /* Resources */,
+				6428F6BDFEEB4B498BA3526C /* [CP] Embed Pods Frameworks */,
+				49F30C3030A67C66C6B08F5F /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = HJDownloadManager;
+			productName = HJDownloadManager;
+			productReference = D2A58310203D3CCA008693D1 /* HJDownloadManager.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D2A58327203D3CCA008693D1 /* HJDownloadManagerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D2A5833F203D3CCA008693D1 /* Build configuration list for PBXNativeTarget "HJDownloadManagerTests" */;
+			buildPhases = (
+				D2A58324203D3CCA008693D1 /* Sources */,
+				D2A58325203D3CCA008693D1 /* Frameworks */,
+				D2A58326203D3CCA008693D1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D2A5832A203D3CCA008693D1 /* PBXTargetDependency */,
+			);
+			name = HJDownloadManagerTests;
+			productName = HJDownloadManagerTests;
+			productReference = D2A58328203D3CCA008693D1 /* HJDownloadManagerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		D2A58332203D3CCA008693D1 /* HJDownloadManagerUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D2A58342203D3CCA008693D1 /* Build configuration list for PBXNativeTarget "HJDownloadManagerUITests" */;
+			buildPhases = (
+				D2A5832F203D3CCA008693D1 /* Sources */,
+				D2A58330203D3CCA008693D1 /* Frameworks */,
+				D2A58331203D3CCA008693D1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D2A58335203D3CCA008693D1 /* PBXTargetDependency */,
+			);
+			name = HJDownloadManagerUITests;
+			productName = HJDownloadManagerUITests;
+			productReference = D2A58333203D3CCA008693D1 /* HJDownloadManagerUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D2A58308203D3CCA008693D1 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0920;
+				ORGANIZATIONNAME = WHJ;
+				TargetAttributes = {
+					D2A5830F203D3CCA008693D1 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+					D2A58327203D3CCA008693D1 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+						TestTargetID = D2A5830F203D3CCA008693D1;
+					};
+					D2A58332203D3CCA008693D1 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+						TestTargetID = D2A5830F203D3CCA008693D1;
+					};
+				};
+			};
+			buildConfigurationList = D2A5830B203D3CCA008693D1 /* Build configuration list for PBXProject "HJDownloadManager" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = D2A58307203D3CCA008693D1;
+			productRefGroup = D2A58311203D3CCA008693D1 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D2A5830F203D3CCA008693D1 /* HJDownloadManager */,
+				D2A58327203D3CCA008693D1 /* HJDownloadManagerTests */,
+				D2A58332203D3CCA008693D1 /* HJDownloadManagerUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D2A5830E203D3CCA008693D1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D2A5831D203D3CCA008693D1 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2A58326203D3CCA008693D1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2A58331203D3CCA008693D1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		49F30C3030A67C66C6B08F5F /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HJDownloadManager/Pods-HJDownloadManager-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		566F31C0D70AF1C837B1083A /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-HJDownloadManager-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6428F6BDFEEB4B498BA3526C /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HJDownloadManager/Pods-HJDownloadManager-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D2A5830C203D3CCA008693D1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D23BF458204536E700F10BF6 /* HJDownloadList_VC.m in Sources */,
+				D23BF45B204539C800F10BF6 /* HJDownloadTabBar_VC.m in Sources */,
+				D23BF47120464EC100F10BF6 /* NSURLSessionTask+HJModel.m in Sources */,
+				D23BF464204645F600F10BF6 /* HJExampleModel.m in Sources */,
+				D23BF455204536DB00F10BF6 /* HJDownloadHome_VC.m in Sources */,
+				D23BF461204545D000F10BF6 /* HJBaseDownloadCell.m in Sources */,
+				D22B7C60204681D90023FB4F /* HJDownloadListCell.m in Sources */,
+				D23BF47020464EC100F10BF6 /* HJDownloadManager.m in Sources */,
+				D2A58323203D3CCA008693D1 /* main.m in Sources */,
+				D23BF45E2045446800F10BF6 /* HJDownloadHomeCell.m in Sources */,
+				D2A58315203D3CCA008693D1 /* AppDelegate.m in Sources */,
+				D23BF47220464EC100F10BF6 /* HJDownloadOperation.m in Sources */,
+				D23BF47320464EC100F10BF6 /* HJDownloadModel.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2A58324203D3CCA008693D1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D2A5832D203D3CCA008693D1 /* HJDownloadManagerTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D2A5832F203D3CCA008693D1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D2A58338203D3CCA008693D1 /* HJDownloadManagerUITests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D2A5832A203D3CCA008693D1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D2A5830F203D3CCA008693D1 /* HJDownloadManager */;
+			targetProxy = D2A58329203D3CCA008693D1 /* PBXContainerItemProxy */;
+		};
+		D2A58335203D3CCA008693D1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D2A5830F203D3CCA008693D1 /* HJDownloadManager */;
+			targetProxy = D2A58334203D3CCA008693D1 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		D2A5833A203D3CCA008693D1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		D2A5833B203D3CCA008693D1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		D2A5833D203D3CCA008693D1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 951F108E05DA06B3FAFF847E /* Pods-HJDownloadManager.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 2PZMTS6D3B;
+				INFOPLIST_FILE = HJDownloadManager/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.psl.whj.HJDownloadManager;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D2A5833E203D3CCA008693D1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3314216F1908E863147F4701 /* Pods-HJDownloadManager.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 2PZMTS6D3B;
+				INFOPLIST_FILE = HJDownloadManager/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.psl.whj.HJDownloadManager;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		D2A58340203D3CCA008693D1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 2PZMTS6D3B;
+				INFOPLIST_FILE = HJDownloadManagerTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.psl.whj.HJDownloadManagerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HJDownloadManager.app/HJDownloadManager";
+			};
+			name = Debug;
+		};
+		D2A58341203D3CCA008693D1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 2PZMTS6D3B;
+				INFOPLIST_FILE = HJDownloadManagerTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.psl.whj.HJDownloadManagerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HJDownloadManager.app/HJDownloadManager";
+			};
+			name = Release;
+		};
+		D2A58343203D3CCA008693D1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 2PZMTS6D3B;
+				INFOPLIST_FILE = HJDownloadManagerUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.psl.whj.HJDownloadManagerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = HJDownloadManager;
+			};
+			name = Debug;
+		};
+		D2A58344203D3CCA008693D1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 2PZMTS6D3B;
+				INFOPLIST_FILE = HJDownloadManagerUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.psl.whj.HJDownloadManagerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = HJDownloadManager;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D2A5830B203D3CCA008693D1 /* Build configuration list for PBXProject "HJDownloadManager" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D2A5833A203D3CCA008693D1 /* Debug */,
+				D2A5833B203D3CCA008693D1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D2A5833C203D3CCA008693D1 /* Build configuration list for PBXNativeTarget "HJDownloadManager" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D2A5833D203D3CCA008693D1 /* Debug */,
+				D2A5833E203D3CCA008693D1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D2A5833F203D3CCA008693D1 /* Build configuration list for PBXNativeTarget "HJDownloadManagerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D2A58340203D3CCA008693D1 /* Debug */,
+				D2A58341203D3CCA008693D1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D2A58342203D3CCA008693D1 /* Build configuration list for PBXNativeTarget "HJDownloadManagerUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D2A58343203D3CCA008693D1 /* Debug */,
+				D2A58344203D3CCA008693D1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D2A58308203D3CCA008693D1 /* Project object */;
+}
