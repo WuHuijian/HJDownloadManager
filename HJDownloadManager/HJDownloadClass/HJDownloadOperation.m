@@ -155,9 +155,11 @@ MJCodingImplementation
             case NSURLSessionTaskStateSuspended:
                 self.downloadModel.status = kHJDownloadStatus_suspended;
                 NSLog(@"NSURLSessionTaskState==NSURLSessionTaskStateSuspended");
+                //为进行任务管理 暂停任务后 直接取消
                 [self cancel];
                 break;
             case NSURLSessionTaskStateCompleted:{
+                
                 NSLog(@"NSURLSessionTaskState==NSURLSessionTaskStateCompleted");
                 if (self.downloadModel.isFinished) {
                     self.downloadModel.status = kHJDownloadStatusCompleted;
@@ -218,7 +220,9 @@ MJCodingImplementation
     return YES;
 }
 
-
+/**
+ *  cancel方法调用后 该operation将会取消并从queue中移除，若队列中有等待中的任务，将会自动执行
+ */
 - (void)cancel{
     kKVOBlock(kIsCancelled, ^{
         [super cancel];
@@ -229,6 +233,7 @@ MJCodingImplementation
         self.downloadTask = nil;
     });
     
+    //start方法没做任务取消监控 所以任务取消后手动调用
     [self start];
 }
 

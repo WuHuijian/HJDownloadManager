@@ -20,7 +20,7 @@
 
 @property (nonatomic, strong) NSOperationQueue *queue;
 
-@property (nonatomic, weak) NSURLSession *backgroundSession;
+@property (nonatomic, strong) NSURLSession *backgroundSession;
 
 @end
 
@@ -118,6 +118,8 @@ static id instace = nil;
     
     [self resumeWithDownloadModel:model];
 }
+
+
 
 - (void)restartWithDownloadModel:(HJDownloadModel *)model{
     

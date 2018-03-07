@@ -57,6 +57,11 @@ typedef NS_ENUM(NSUInteger, HJOperationType) {
 
 - (void)startWithDownloadModel:(HJDownloadModel *)model;
 
+/**
+ *  重新添加下载任务 （暂停||失败）状态下调用
+ *
+ *  @param model 下载模型
+ */
 - (void)restartWithDownloadModel:(HJDownloadModel *)model;
 /**
  *  暂停下载
