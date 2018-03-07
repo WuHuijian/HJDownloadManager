@@ -7,13 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
-
+#import "HJDownloadHeaders.h"
 
 typedef NS_ENUM(NSUInteger, HJOperationType) {
-    kHJOperationType_start,
-    kHJOperationType_suspend ,
-    kHJOperationType_resume,
-    kHJOperationType_stop
+    kHJOperationType_startAll,
+    kHJOperationType_suspendAll ,
+    kHJOperationType_resumeAll
 };
 
 #define kHJDownloadManager [HJDownloadManager sharedManager]
@@ -33,36 +32,14 @@ typedef NS_ENUM(NSUInteger, HJOperationType) {
 
 @property (nonatomic, strong, readonly) NSMutableArray * waitModels;
 
-
-
-@property (nonatomic, strong, readonly) NSURLSession * currentSession;
-
 @property (nonatomic, assign) NSInteger maxConcurrentOperationCount;
 
-@property (nonatomic, assign) BOOL backgroundDownload;//是否后台下载
 
 + (instancetype)sharedManager;
 /**
- *  添加下载对象
- */
-- (void)addDownloadModel:(HJDownloadModel *)model;
-
-- (void)addDownloadModels:(NSArray<HJDownloadModel *> *)models;
-
-/**
  *  开始下载
- *
- *  @param model 下载模型
  */
-
 - (void)startWithDownloadModel:(HJDownloadModel *)model;
-
-/**
- *  重新添加下载任务 （暂停||失败）状态下调用
- *
- *  @param model 下载模型
- */
-- (void)restartWithDownloadModel:(HJDownloadModel *)model;
 /**
  *  暂停下载
  */
@@ -71,43 +48,38 @@ typedef NS_ENUM(NSUInteger, HJOperationType) {
  *  恢复下载
  */
 - (void)resumeWithDownloadModel:(HJDownloadModel *)model;
-
 /**
- *  取消下载
+ *  取消下载 (取消下载后 operation将从队列中移除 并 移除下载模型和对应文件)
  */
 - (void)stopWithDownloadModel:(HJDownloadModel *)model;
 
-
-- (void)startAllDownloadTasks;
+- (void)startWithDownloadModels:(NSArray<HJDownloadModel *> *)downloadModels;
 
 - (void)suspendAllDownloadTasks;
 
 - (void)resumeAllDownloadTasks;
 
 - (void)stopAllDownloadTasks;
-
-/**
- *  保存数据
- */
-
-- (void)saveData;
-
 /**
  *  获取下载模型
  */
 - (HJDownloadModel *)downloadModelWithUrl:(NSString *)url;
 
+
+
+#pragma mark - 文件操作相关
 /**
- *  移除下载模型
+ *  保存数据
  */
-- (void)removeDownloadModelWithModel:(HJDownloadModel *)downloadModel;
+- (void)saveData;
 
 /**
- *  移除全部下载模型（包括下载文件）
+ *  移除目录下所有文件
  */
-- (void)removeAll;
+- (void)removeAllFiles;
 
 
+#pragma mark - 后台任务相关
 - (void)getBackgroundTask;
 
 - (void)endBackgroundTask;

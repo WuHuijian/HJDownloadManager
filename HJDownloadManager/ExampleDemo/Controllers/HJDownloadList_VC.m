@@ -16,6 +16,8 @@
 
 @property (nonatomic, strong) NSMutableArray *datas;
 
+@property (nonatomic, strong) UIView *tableHeader;
+
 @end
 
 static NSString * const kHJlistTableCellID = @"HJlistTableCellIdentifier";
@@ -43,6 +45,7 @@ static NSString * const kHJlistTableCellID = @"HJlistTableCellIdentifier";
     [self buildDatas];
     
     if(self.datas){
+        self.listTable.editing = NO;
         [self.listTable reloadData];
     }
 }
@@ -60,6 +63,7 @@ static NSString * const kHJlistTableCellID = @"HJlistTableCellIdentifier";
     [tableView registerClass:[HJDownloadListCell class] forCellReuseIdentifier:kHJlistTableCellID];
     [self.view addSubview:tableView];
     self.listTable = tableView;
+    self.listTable.tableHeaderView = self.tableHeader;
     
     UIButton * deleteAllBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [deleteAllBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -91,7 +95,7 @@ static NSString * const kHJlistTableCellID = @"HJlistTableCellIdentifier";
     
     UIAlertAction *confirmAction = [UIAlertAction actionWithTitle:@"确认删除" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         
-         [kHJDownloadManager removeAll];
+         [kHJDownloadManager stopAllDownloadTasks];
          [self.datas removeAllObjects];
         
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -102,7 +106,19 @@ static NSString * const kHJlistTableCellID = @"HJlistTableCellIdentifier";
     [alertC addAction:cancelAction];
     [alertC addAction:confirmAction];
     [self presentViewController:alertC animated:YES completion:nil] ;
+}
+
+
+- (void)pauseAll{
     
+    [kHJDownloadManager suspendAllDownloadTasks];
+    
+}
+
+
+- (void)resumeAll{
+    
+    [kHJDownloadManager resumeAllDownloadTasks];
 }
 #pragma mark - Delegate methods
 
@@ -181,7 +197,7 @@ static NSString * const kHJlistTableCellID = @"HJlistTableCellIdentifier";
         [tableView beginUpdates];
         
         HJDownloadModel *downloadModel = weakCell.downloadModel;
-        [kHJDownloadManager removeDownloadModelWithModel:weakSelf.datas[indexPath.row]];
+        [kHJDownloadManager stopWithDownloadModel:weakSelf.datas[indexPath.row]];
         [weakSelf.datas removeObject:downloadModel];
         [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationBottom];
        
@@ -193,4 +209,30 @@ static NSString * const kHJlistTableCellID = @"HJlistTableCellIdentifier";
 
 
 #pragma mark - Getters/Setters/Lazy
+- (UIView *)tableHeader{
+    
+    if (!_tableHeader) {
+        CGFloat width = self.view.frame.size.width;
+        _tableHeader = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, 44)];
+        UIButton * pauseAllBtn = [self buttonWithTitle:@"暂停全部" action:@selector(pauseAll)];
+        [pauseAllBtn setFrame:CGRectMake(0, 0,width/2.f, 44)];
+        [_tableHeader addSubview:pauseAllBtn];
+        
+        UIButton * resumeAllBtn = [self buttonWithTitle:@"全部继续" action:@selector(resumeAll)];
+        [resumeAllBtn setFrame:CGRectMake(width/2.f, 0,width/2.f, 44)];
+        [_tableHeader addSubview:resumeAllBtn];
+
+    }
+    return _tableHeader;
+}
+
+
+- (UIButton *)buttonWithTitle:(NSString *)title action:(SEL)sel{
+    
+    UIButton * btn = [UIButton buttonWithType:UIButtonTypeSystem];
+    [btn addTarget:self action:sel forControlEvents:UIControlEventTouchUpInside];
+    [btn setTitle:title forState:UIControlStateNormal];
+    [btn setBackgroundColor:[UIColor lightGrayColor]];
+    return btn;
+}
 @end

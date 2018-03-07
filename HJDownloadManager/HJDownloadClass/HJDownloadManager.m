@@ -8,7 +8,6 @@
 
 #import "HJDownloadManager.h"
 #import "AppDelegate.h"
-#import "HJDownloadHeaders.h"
 
 @interface HJDownloadManager ()<NSURLSessionDataDelegate>{
     NSMutableArray *_downloadModels;
@@ -115,15 +114,9 @@ static id instace = nil;
 
 
 - (void)startWithDownloadModel:(HJDownloadModel *)model{
+
+    [self addDownloadModel:model];
     
-    [self resumeWithDownloadModel:model];
-}
-
-
-
-- (void)restartWithDownloadModel:(HJDownloadModel *)model{
-    
-    [model setOperation:nil];
     [self resumeWithDownloadModel:model];
 }
 
@@ -136,6 +129,8 @@ static id instace = nil;
 
 - (void)resumeWithDownloadModel:(HJDownloadModel *)model{
    
+    [model setOperation:nil];
+    
     __weak typeof(self) weakSelf = self;
    
     if (model.operation == nil) {
@@ -163,37 +158,66 @@ static id instace = nil;
         
         [model.operation cancel];
     }
+    
+    [self removeDownloadModelWithModel:model];
 }
 
 
 
-- (void)startAllDownloadTasks;{
+- (void)startWithDownloadModels:(NSArray<HJDownloadModel *> *)downloadModels{
     
-    [self operateTasksWithOperationType:kHJOperationType_start];
+    [self addDownloadModels:downloadModels];
+    
+    [self operateTasksWithOperationType:kHJOperationType_startAll];
 }
 
 
 
 - (void)suspendAllDownloadTasks{
     
-    [self operateTasksWithOperationType:kHJOperationType_suspend];
+    [self operateTasksWithOperationType:kHJOperationType_suspendAll];
 }
 
 
 
 - (void)resumeAllDownloadTasks{
     
-    [self operateTasksWithOperationType:kHJOperationType_resume];
+    [self operateTasksWithOperationType:kHJOperationType_resumeAll];
 }
 
 
 
 - (void)stopAllDownloadTasks{
     
-    [self operateTasksWithOperationType:kHJOperationType_stop];
+    [self.queue cancelAllOperations];
+
+    [self removeAllFiles];
 }
 
-
+/**
+ *  从备份恢复下载数据
+ */
+- (void)recoverDownloadModels{
+    
+    if ([kFileManager fileExistsAtPath:HJSavedDownloadModelsBackup]) {
+        NSError * error = nil;
+        [kFileManager removeItemAtPath:HJSavedDownloadModelsFilePath error:nil];
+        BOOL recoverSuccess = [kFileManager copyItemAtPath:HJSavedDownloadModelsBackup toPath:HJSavedDownloadModelsFilePath error:&error];
+        if (recoverSuccess) {
+            NSLog(@"Tip:数据恢复成功");
+            
+            [self.downloadModels enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                HJDownloadModel *model = (HJDownloadModel *)obj;
+                if (model.status == kHJDownloadStatus_Running ||
+                    model.status == kHJDownloadStatusWaiting){
+                    [self startWithDownloadModel:model];
+                }
+            }];
+        }else{
+            NSLog(@"Tip:数据恢复失败，%@",error);
+        }
+    }
+}
 
 #pragma mark - 文件相关
 /**
@@ -244,29 +268,7 @@ static id instace = nil;
     }
 }
 
-/**
- *  从备份恢复下载数据
- */
-- (void)recoverDownloadModels{
-    
-        if ([kFileManager fileExistsAtPath:HJSavedDownloadModelsBackup]) {
-            NSError * error = nil;
-            [kFileManager removeItemAtPath:HJSavedDownloadModelsFilePath error:nil];
-            BOOL recoverSuccess = [kFileManager copyItemAtPath:HJSavedDownloadModelsBackup toPath:HJSavedDownloadModelsFilePath error:&error];
-            if (recoverSuccess) {
-                NSLog(@"Tip:数据恢复成功");
-                
-                [self.downloadModels enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                    HJDownloadModel *model = (HJDownloadModel *)obj;
-                    if (model.status == kHJDownloadStatus_Running){
-                        [self startWithDownloadModel:model];
-                    }
-                }];
-            }else{
-                NSLog(@"Tip:数据恢复失败，%@",error);
-            }
-        }
-}
+
 
 -(BOOL)checkExistWithDownloadModel:(HJDownloadModel *)model{
     
@@ -289,40 +291,28 @@ static id instace = nil;
     return nil;
 }
 
-- (void)removeDownloadModelWithUrl:(NSString *)url;{
-    HJDownloadModel *downloadModel = [self downloadModelWithUrl:url];
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    if ([fileManager fileExistsAtPath:downloadModel.destinationPath]) {
-        NSError *error = nil;
-        BOOL success = [fileManager removeItemAtPath:downloadModel.destinationPath error:&error];
-        if (success) {
-            NSLog(@"Tip:下载文件删除成功");
-        }
-    }
-}
-
-
 - (void)removeDownloadModelWithModel:(HJDownloadModel *)downloadModel{
-    
+
     if ([self downloadModelWithUrl:downloadModel.urlString]) {
         HJDownloadModel *model = [self downloadModelWithUrl:downloadModel.urlString];
-        [kHJDownloadManager suspendWithDownloadModel:downloadModel];
         NSError *error = nil;
-        [kFileManager removeItemAtPath:downloadModel.destinationPath error:&error];
+        
+        [kFileManager removeItemAtPath:model.destinationPath error:&error];
         if (error) {
             NSLog(@"Tip:下载文件移除失败，%@",error);
         }else{
             NSLog(@"Tip:下载文件移除成功");
         }
-        
         [self.downloadModels removeObject:model];
+        
         [self saveData];
     }
 }
 
-- (void)removeAll{
-    
-    [self stopAllDownloadTasks];
+/**
+ *  移除目录中所有文件
+ */
+- (void)removeAllFiles{
     
     //返回路径中的文件数组
     NSArray * files = [[NSFileManager defaultManager] subpathsAtPath:HJCachesDirectory];
@@ -349,17 +339,14 @@ static id instace = nil;
     [self.downloadModels enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         HJDownloadModel *downloadModel = obj;
         switch (operationType) {
-            case kHJOperationType_start:
+            case kHJOperationType_startAll:
                 [weakSelf startWithDownloadModel:downloadModel];
                 break;
-            case kHJOperationType_suspend:
+            case kHJOperationType_suspendAll:
                 [weakSelf suspendWithDownloadModel:downloadModel];
                 break;
-            case kHJOperationType_resume:
-                [weakSelf resumeWithDownloadModel:downloadModel];
-                break;
-            case kHJOperationType_stop:
-                [weakSelf stopWithDownloadModel:downloadModel];
+            case kHJOperationType_resumeAll:
+                [weakSelf startWithDownloadModel:downloadModel];
                 break;
             default:
                 break;
@@ -367,7 +354,7 @@ static id instace = nil;
     }];
 }
 
-#pragma mark - Setters/Getters
+#pragma mark - Getters/Setters
 - (NSMutableArray *)downloadModels{
     
     if (!_downloadModels) {
@@ -476,7 +463,7 @@ static id instace = nil;
 
 
 
-#pragma mark NSURLSessionDataDelegate
+#pragma mark - NSURLSessionDataDelegate
 /**
  * 接收到响应
  */
@@ -532,7 +519,7 @@ static id instace = nil;
 }
 
 
-#pragma mark - 后台
+#pragma mark - 后台任务相关
 /**
  *  获取后台任务
  */

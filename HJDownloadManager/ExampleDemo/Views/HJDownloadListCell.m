@@ -91,7 +91,6 @@ static const CGFloat kListCellHeight = 58.f;
     
     if(downloadStatus == kHJDownloadStatus_None){
         
-        [kHJDownloadManager addDownloadModel:self.downloadModel];
         [kHJDownloadManager startWithDownloadModel:self.downloadModel];
         
     }else if(downloadStatus == kHJDownloadStatus_Running){
@@ -100,20 +99,20 @@ static const CGFloat kListCellHeight = 58.f;
         
     }else if(downloadStatus == kHJDownloadStatus_suspended){
         
-        [kHJDownloadManager restartWithDownloadModel:self.downloadModel];
+        [kHJDownloadManager resumeWithDownloadModel:self.downloadModel];
         
     }else if(downloadStatus == kHJDownloadStatusCompleted){
         
         
     }else if(downloadStatus == kHJDownloadStatusFailed){
         
-        [kHJDownloadManager restartWithDownloadModel:self.downloadModel];
+        [kHJDownloadManager startWithDownloadModel:self.downloadModel];
         
     }else if(downloadStatus == kHJDownloadStatusWaiting){
         
     }else if(downloadStatus == kHJDownloadStatusCancel){
         
-        [kHJDownloadManager restartWithDownloadModel:self.downloadModel];
+        [kHJDownloadManager startWithDownloadModel:self.downloadModel];
     }
     
 }

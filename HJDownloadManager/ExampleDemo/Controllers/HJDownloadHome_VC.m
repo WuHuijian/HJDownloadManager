@@ -9,12 +9,15 @@
 #import "HJDownloadHome_VC.h"
 #import "HJDownloadHomeCell.h"
 #import "HJExampleModel.h"
+#import "HJDownloadManager.h"
 
 @interface HJDownloadHome_VC ()<UITableViewDelegate,UITableViewDataSource>
 
 @property (nonatomic, strong) UITableView *homeTable;
 
 @property (nonatomic, strong) NSMutableArray *datas;
+
+@property (nonatomic, strong) UIButton *tableHeader;
 
 @end
 
@@ -76,6 +79,7 @@ static NSString * const kHJHomeTableCellID = @"HJHomeTableCellIdentifier";
     [self.view addSubview:tableView];
     
     self.homeTable = tableView;
+    self.homeTable.tableHeaderView = self.tableHeader;
 }
 
 #pragma mark - Request Data
@@ -85,7 +89,21 @@ static NSString * const kHJHomeTableCellID = @"HJHomeTableCellIdentifier";
 #pragma mark - Public Method
 
 #pragma mark - Event response
-
+- (void)downloadAll{
+    
+    NSMutableArray *models = [NSMutableArray arrayWithCapacity:self.datas.count];
+    [self.datas enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        HJExampleModel *exampleModel = obj;
+        HJDownloadModel *model = [[HJDownloadModel alloc] init];
+        model.urlString = exampleModel.url;
+        model.downloadDesc = exampleModel.name;
+        [models addObject:model];
+    }];
+    
+    [kHJDownloadManager startWithDownloadModels:models];
+    //下载任务不是从cell中添加，所以需要刷新列表
+    [self.homeTable reloadData];
+}
 #pragma mark - Delegate methods
 
 #pragma mark - UITableViewDataSource
@@ -141,4 +159,15 @@ static NSString * const kHJHomeTableCellID = @"HJHomeTableCellIdentifier";
 
 
 #pragma mark - Getters/Setters/Lazy
+- (UIButton *)tableHeader{
+    
+    if (!_tableHeader) {
+        _tableHeader = [UIButton buttonWithType:UIButtonTypeSystem];
+        [_tableHeader setFrame:CGRectMake(0, 0, 0, 44)];
+        [_tableHeader addTarget:self action:@selector(downloadAll) forControlEvents:UIControlEventTouchUpInside];
+        [_tableHeader setTitle:@"下载全部" forState:UIControlStateNormal];
+        [_tableHeader setBackgroundColor:[UIColor lightGrayColor]];
+    }
+    return _tableHeader;
+}
 @end
