@@ -12,7 +12,8 @@
 typedef NS_ENUM(NSUInteger, HJOperationType) {
     kHJOperationType_startAll,
     kHJOperationType_suspendAll ,
-    kHJOperationType_resumeAll
+    kHJOperationType_resumeAll,
+    kHJOperationType_stopAll
 };
 
 #define kHJDownloadManager [HJDownloadManager sharedManager]
@@ -36,6 +37,8 @@ typedef NS_ENUM(NSUInteger, HJOperationType) {
 
 
 + (instancetype)sharedManager;
+
+#pragma mark - 单下载任务控制
 /**
  *  开始下载
  */
@@ -53,13 +56,18 @@ typedef NS_ENUM(NSUInteger, HJOperationType) {
  */
 - (void)stopWithDownloadModel:(HJDownloadModel *)model;
 
+#pragma mark - 多下载任务控制
 - (void)startWithDownloadModels:(NSArray<HJDownloadModel *> *)downloadModels;
 
-- (void)suspendAllDownloadTasks;
+- (void)suspendAll;
 
-- (void)resumeAllDownloadTasks;
+- (void)resumeAll;
 
-- (void)stopAllDownloadTasks;
+- (void)stopAll;
+
+
+
+
 /**
  *  获取下载模型
  */

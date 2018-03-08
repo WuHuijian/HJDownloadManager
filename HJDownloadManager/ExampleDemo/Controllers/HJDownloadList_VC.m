@@ -95,7 +95,7 @@ static NSString * const kHJlistTableCellID = @"HJlistTableCellIdentifier";
     
     UIAlertAction *confirmAction = [UIAlertAction actionWithTitle:@"确认删除" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         
-         [kHJDownloadManager stopAllDownloadTasks];
+         [kHJDownloadManager stopAll];
          [self.datas removeAllObjects];
         
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -111,14 +111,14 @@ static NSString * const kHJlistTableCellID = @"HJlistTableCellIdentifier";
 
 - (void)pauseAll{
     
-    [kHJDownloadManager suspendAllDownloadTasks];
+    [kHJDownloadManager suspendAll];
     
 }
 
 
 - (void)resumeAll{
     
-    [kHJDownloadManager resumeAllDownloadTasks];
+    [kHJDownloadManager resumeAll];
 }
 #pragma mark - Delegate methods
 

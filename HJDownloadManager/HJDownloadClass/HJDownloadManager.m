@@ -115,13 +115,37 @@ static id instace = nil;
 
 - (void)startWithDownloadModel:(HJDownloadModel *)model{
 
+    if (model.status == kHJDownloadStatusCompleted) {
+        return;
+    }
+    
     [self addDownloadModel:model];
     
-    [self resumeWithDownloadModel:model];
+    [model setOperation:nil];
+    
+    __weak typeof(self) weakSelf = self;
+    
+    if (model.operation == nil) {
+        model.operation = [[HJDownloadOperation alloc] initWithDownloadModel:model andSession:self.backgroundSession];
+        model.operation.downloadStatusChangedBlock = ^{
+            [weakSelf saveData];
+        };
+        [self.queue addOperation:model.operation];
+        
+    }else{
+        
+        if (model.operation.downloadStatusChangedBlock) {
+            model.operation.session = self.backgroundSession;
+            model.operation.downloadStatusChangedBlock = ^{
+                [weakSelf saveData];
+            };
+        }
+        [model.operation resume];
+    }
 }
 
 - (void)suspendWithDownloadModel:(HJDownloadModel *)model{
-    if (model.status != kHJDownloadStatusCompleted) {
+    if (model.status == kHJDownloadStatus_Running || model.status == kHJDownloadStatusWaiting) {
         [model.operation suspend];
     }
 }
@@ -129,12 +153,16 @@ static id instace = nil;
 
 - (void)resumeWithDownloadModel:(HJDownloadModel *)model{
    
+    if (model.status != kHJDownloadStatus_suspended) {
+        return;
+    }
+    
     [model setOperation:nil];
     
     __weak typeof(self) weakSelf = self;
    
     if (model.operation == nil) {
-        model.operation = [[HJDownloadOperation alloc]initWithDownloadModel:model andSession:self.backgroundSession];
+        model.operation = [[HJDownloadOperation alloc] initWithDownloadModel:model andSession:self.backgroundSession];
         model.operation.downloadStatusChangedBlock = ^{
             [weakSelf saveData];
         };
@@ -173,24 +201,25 @@ static id instace = nil;
 
 
 
-- (void)suspendAllDownloadTasks{
+- (void)suspendAll{
     
     [self operateTasksWithOperationType:kHJOperationType_suspendAll];
 }
 
 
 
-- (void)resumeAllDownloadTasks{
+- (void)resumeAll{
     
     [self operateTasksWithOperationType:kHJOperationType_resumeAll];
 }
 
 
 
-- (void)stopAllDownloadTasks{
+- (void)stopAll{
     
+//    [self operateTasksWithOperationType:kHJOperationType_stopAll];
     [self.queue cancelAllOperations];
-
+    [self.downloadModels removeAllObjects];
     [self removeAllFiles];
 }
 
@@ -242,12 +271,15 @@ static id instace = nil;
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         NSError *error = nil;
         [self removeBackupFile];
-        BOOL backupSuccess = [kFileManager copyItemAtPath:HJSavedDownloadModelsFilePath toPath:HJSavedDownloadModelsBackup error:&error];
-        if (backupSuccess) {
-            NSLog(@"Tip:数据备份成功");
-        }else{
-            NSLog(@"Tip:数据备份失败，%@",error);
-            [self backupFile];
+        BOOL exist = [kFileManager fileExistsAtPath:HJSavedDownloadModelsFilePath];
+        if (exist) {
+            BOOL backupSuccess = [kFileManager copyItemAtPath:HJSavedDownloadModelsFilePath toPath:HJSavedDownloadModelsBackup error:&error];
+            if (backupSuccess) {
+                NSLog(@"Tip:数据备份成功");
+            }else{
+                NSLog(@"Tip:数据备份失败，%@",error);
+                [self backupFile];
+            }
         }
     });
 }
@@ -293,21 +325,19 @@ static id instace = nil;
 
 - (void)removeDownloadModelWithModel:(HJDownloadModel *)downloadModel{
 
-    if ([self downloadModelWithUrl:downloadModel.urlString]) {
-        HJDownloadModel *model = [self downloadModelWithUrl:downloadModel.urlString];
         NSError *error = nil;
-        
-        [kFileManager removeItemAtPath:model.destinationPath error:&error];
+    
+        [kFileManager removeItemAtPath:downloadModel.destinationPath error:&error];
         if (error) {
             NSLog(@"Tip:下载文件移除失败，%@",error);
         }else{
             NSLog(@"Tip:下载文件移除成功");
         }
-        [self.downloadModels removeObject:model];
-        
+        [self.downloadModels removeObject:downloadModel];
+    
         [self saveData];
-    }
 }
+
 
 /**
  *  移除目录中所有文件
@@ -322,12 +352,12 @@ static id instace = nil;
         
         NSString*path = [HJCachesDirectory stringByAppendingString:[NSString stringWithFormat:@"/%@",p]];
         
-        if([[NSFileManager defaultManager]fileExistsAtPath:path]){
+        if([[NSFileManager defaultManager] fileExistsAtPath:path]){
             BOOL isRemove = [[NSFileManager defaultManager]removeItemAtPath:path error:&error];
             if(isRemove) {
-                NSLog(@"清除成功");
+                NSLog(@"文件：%@-->清除成功",p);
             }else{
-                NSLog(@"清除失败");
+                NSLog(@"文件：%@-->清除失败",p);
             }
         }
     }
@@ -347,6 +377,9 @@ static id instace = nil;
                 break;
             case kHJOperationType_resumeAll:
                 [weakSelf startWithDownloadModel:downloadModel];
+                break;
+            case kHJOperationType_stopAll:
+          
                 break;
             default:
                 break;
