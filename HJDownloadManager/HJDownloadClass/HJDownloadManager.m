@@ -95,13 +95,10 @@ static id instace = nil;
 
 #pragma mark - 下载控制
 - (void)addDownloadModel:(HJDownloadModel *)model{
-    NSLog(@">>>%@前 operationCount = %zd", NSStringFromSelector(_cmd),self.queue.operationCount);
     if (![self checkExistWithDownloadModel:model]) {
         [self.downloadModels addObject:model];
         NSLog(@"下载模型添加成功");
     }
-    
-    NSLog(@"<<<%@后 operationCount = %zd",NSStringFromSelector(_cmd),self.queue.operationCount);
 }
 
 
@@ -157,9 +154,9 @@ static id instace = nil;
         if (model.status == kHJDownloadStatus_Running) {//下载中 则暂停
             [model.operation suspend];
         }
-//        else if (model.status == kHJDownloadStatusWaiting){//等待中 则取消
-//            [model.operation cancel];
-//        }
+        else if (model.status == kHJDownloadStatusWaiting){//等待中 则取消
+            [model.operation cancel];
+        }
     }else{
         if (model.status == kHJDownloadStatus_Running) {
             [model.operation suspend];
@@ -169,6 +166,10 @@ static id instace = nil;
 
 
 - (void)resumeWithDownloadModel:(HJDownloadModel *)model{
+    
+    if (model.status == kHJDownloadStatusCompleted || model.status == kHJDownloadStatus_Running) {
+        return;
+    }
   
     [model setOperation:nil];
     
@@ -221,7 +222,6 @@ static id instace = nil;
     NSLog(@">>>%@前 operationCount = %zd", NSStringFromSelector(_cmd),self.queue.operationCount);
     [self.queue setSuspended:YES];
     [self operateTasksWithOperationType:kHJOperationType_suspendAll];
-    [self.queue cancelAllOperations];
     NSLog(@"<<<%@后 operationCount = %zd",NSStringFromSelector(_cmd),self.queue.operationCount);
 }
 
@@ -240,8 +240,8 @@ static id instace = nil;
 - (void)stopAll{
     
     NSLog(@">>>%@前 operationCount = %zd", NSStringFromSelector(_cmd),self.queue.operationCount);
-    [self.queue cancelAllOperations];
     [self operateTasksWithOperationType:kHJOperationType_stopAll];
+    [self.queue cancelAllOperations];
     [self removeAllFiles];
     [self.downloadModels removeAllObjects];
     NSLog(@"<<<%@后 operationCount = %zd",NSStringFromSelector(_cmd),self.queue.operationCount);
@@ -400,7 +400,7 @@ static id instace = nil;
                 [weakSelf suspendWithDownloadModel:downloadModel forAll:YES];
                 break;
             case kHJOperationType_resumeAll:
-                [weakSelf startWithDownloadModel:downloadModel];
+                [weakSelf resumeWithDownloadModel:downloadModel];
                 break;
             case kHJOperationType_stopAll:
           
