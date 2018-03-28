@@ -180,7 +180,7 @@ MJCodingImplementation
                 break;
             case NSURLSessionTaskStateCanceling:
                 NSLog(@"NSURLSessionTaskState==NSURLSessionTaskStateCanceling");
-                self.downloadModel.status = kHJDownloadStatusCancel;
+             
                 break;
             default:
                 break;

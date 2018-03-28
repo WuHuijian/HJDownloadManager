@@ -80,6 +80,17 @@ static NSString * const kHJHomeTableCellID = @"HJHomeTableCellIdentifier";
     
     self.homeTable = tableView;
     self.homeTable.tableHeaderView = self.tableHeader;
+    
+    
+    UIButton * monitorBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [monitorBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    monitorBtn.frame = CGRectMake(0, 0, 80, 44);
+    monitorBtn.titleLabel.font = [UIFont systemFontOfSize:16.f];
+    [monitorBtn setTitle:@"闪退模拟" forState:UIControlStateNormal];
+    monitorBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
+    [monitorBtn addTarget:self action:@selector(monitorFlashAction) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *rightBarItem = [[UIBarButtonItem alloc] initWithCustomView:monitorBtn];
+    self.navigationItem.rightBarButtonItem = rightBarItem;
 }
 
 #pragma mark - Request Data
@@ -103,6 +114,14 @@ static NSString * const kHJHomeTableCellID = @"HJHomeTableCellIdentifier";
     [kHJDownloadManager startWithDownloadModels:models];
     //下载任务不是从cell中添加，所以需要刷新列表
     [self.homeTable reloadData];
+}
+
+- (void)monitorFlashAction{
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            NSArray *arr = @[];
+            NSLog(@"%@",arr[1]);
+    });
 }
 #pragma mark - Delegate methods
 

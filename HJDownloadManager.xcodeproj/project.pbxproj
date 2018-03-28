@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		55331E06F2B062F904F72984 /* libPods-HJDownloadManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 86F40F027728294F6DE4E62F /* libPods-HJDownloadManager.a */; };
+		D215274B2069EEFF0094555C /* HJUncaughtExceptionHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = D215274A2069EEFF0094555C /* HJUncaughtExceptionHandler.m */; };
 		D22B7C60204681D90023FB4F /* HJDownloadListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D22B7C5F204681D90023FB4F /* HJDownloadListCell.m */; };
 		D23BF455204536DB00F10BF6 /* HJDownloadHome_VC.m in Sources */ = {isa = PBXBuildFile; fileRef = D23BF454204536DB00F10BF6 /* HJDownloadHome_VC.m */; };
 		D23BF458204536E700F10BF6 /* HJDownloadList_VC.m in Sources */ = {isa = PBXBuildFile; fileRef = D23BF457204536E700F10BF6 /* HJDownloadList_VC.m */; };
@@ -47,6 +48,8 @@
 		3314216F1908E863147F4701 /* Pods-HJDownloadManager.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HJDownloadManager.release.xcconfig"; path = "Pods/Target Support Files/Pods-HJDownloadManager/Pods-HJDownloadManager.release.xcconfig"; sourceTree = "<group>"; };
 		86F40F027728294F6DE4E62F /* libPods-HJDownloadManager.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HJDownloadManager.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		951F108E05DA06B3FAFF847E /* Pods-HJDownloadManager.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HJDownloadManager.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HJDownloadManager/Pods-HJDownloadManager.debug.xcconfig"; sourceTree = "<group>"; };
+		D21527492069EEFF0094555C /* HJUncaughtExceptionHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HJUncaughtExceptionHandler.h; sourceTree = "<group>"; };
+		D215274A2069EEFF0094555C /* HJUncaughtExceptionHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HJUncaughtExceptionHandler.m; sourceTree = "<group>"; };
 		D22B7C5E204681D90023FB4F /* HJDownloadListCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HJDownloadListCell.h; sourceTree = "<group>"; };
 		D22B7C5F204681D90023FB4F /* HJDownloadListCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HJDownloadListCell.m; sourceTree = "<group>"; };
 		D23BF453204536DB00F10BF6 /* HJDownloadHome_VC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HJDownloadHome_VC.h; sourceTree = "<group>"; };
@@ -177,6 +180,8 @@
 				D23BF46F20464EC000F10BF6 /* HJDownloadOperation.h */,
 				D23BF46920464EC000F10BF6 /* HJDownloadOperation.m */,
 				D23BF4742046502700F10BF6 /* HJDownloadConst.h */,
+				D21527492069EEFF0094555C /* HJUncaughtExceptionHandler.h */,
+				D215274A2069EEFF0094555C /* HJUncaughtExceptionHandler.m */,
 			);
 			path = HJDownloadClass;
 			sourceTree = "<group>";
@@ -442,6 +447,7 @@
 				D2A58315203D3CCA008693D1 /* AppDelegate.m in Sources */,
 				D23BF47220464EC100F10BF6 /* HJDownloadOperation.m in Sources */,
 				D23BF47320464EC100F10BF6 /* HJDownloadModel.m in Sources */,
+				D215274B2069EEFF0094555C /* HJUncaughtExceptionHandler.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -74,6 +74,8 @@ static id instace = nil;
     
     [[NSNotificationCenter defaultCenter] addObserver:instace selector:@selector(recoverDownloadModels) name:UIApplicationDidFinishLaunchingNotification object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:instace selector:@selector(applicationWillTerminate) name:UIApplicationWillTerminateNotification object:nil];
+    
     [[NSNotificationCenter defaultCenter] addObserver:instace selector:@selector(endBackgroundTask) name:UIApplicationWillEnterForegroundNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:instace selector:@selector(getBackgroundTask) name:UIApplicationDidEnterBackgroundNotification object:nil];
@@ -93,20 +95,20 @@ static id instace = nil;
 
 #pragma mark - 下载控制
 - (void)addDownloadModel:(HJDownloadModel *)model{
+    NSLog(@">>>%@前 operationCount = %zd", NSStringFromSelector(_cmd),self.queue.operationCount);
     if (![self checkExistWithDownloadModel:model]) {
         [self.downloadModels addObject:model];
         NSLog(@"下载模型添加成功");
     }
+    
+    NSLog(@"<<<%@后 operationCount = %zd",NSStringFromSelector(_cmd),self.queue.operationCount);
 }
 
 
 - (void)addDownloadModels:(NSArray<HJDownloadModel *> *)models{
     if ([models isKindOfClass:[NSArray class]]) {
         [models enumerateObjectsUsingBlock:^(HJDownloadModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            HJDownloadModel *downloadModel = obj;
-            if (![self checkExistWithDownloadModel:downloadModel]) {
-                [self.downloadModels addObject:downloadModel];
-            }
+            [self addDownloadModel:obj];
         }];
     }
 }
@@ -115,73 +117,85 @@ static id instace = nil;
 
 - (void)startWithDownloadModel:(HJDownloadModel *)model{
 
-    if (model.status == kHJDownloadStatusCompleted) {
+    if (model.status == kHJDownloadStatusCompleted || model.status == kHJDownloadStatus_Running) {
         return;
     }
-    
+
     [self addDownloadModel:model];
     
     [model setOperation:nil];
     
-    __weak typeof(self) weakSelf = self;
+//    __weak typeof(self) weakSelf = self;
     
     if (model.operation == nil) {
         model.operation = [[HJDownloadOperation alloc] initWithDownloadModel:model andSession:self.backgroundSession];
-        model.operation.downloadStatusChangedBlock = ^{
-            [weakSelf saveData];
-        };
+//        model.operation.downloadStatusChangedBlock = ^{
+//            [weakSelf saveData];
+//        };
         [self.queue addOperation:model.operation];
         
     }else{
         
         if (model.operation.downloadStatusChangedBlock) {
             model.operation.session = self.backgroundSession;
-            model.operation.downloadStatusChangedBlock = ^{
-                [weakSelf saveData];
-            };
+//            model.operation.downloadStatusChangedBlock = ^{
+//                [weakSelf saveData];
+//            };
         }
         [model.operation resume];
     }
 }
 
 - (void)suspendWithDownloadModel:(HJDownloadModel *)model{
-    if (model.status == kHJDownloadStatus_Running || model.status == kHJDownloadStatusWaiting) {
-        [model.operation suspend];
+    
+    [self suspendWithDownloadModel:model forAll:NO];
+}
+
+
+- (void)suspendWithDownloadModel:(HJDownloadModel *)model forAll:(BOOL)forAll{
+    if (forAll) {//暂停全部
+        if (model.status == kHJDownloadStatus_Running) {//下载中 则暂停
+            [model.operation suspend];
+        }
+//        else if (model.status == kHJDownloadStatusWaiting){//等待中 则取消
+//            [model.operation cancel];
+//        }
+    }else{
+        if (model.status == kHJDownloadStatus_Running) {
+            [model.operation suspend];
+        }
     }
 }
 
 
 - (void)resumeWithDownloadModel:(HJDownloadModel *)model{
-   
-    if (model.status != kHJDownloadStatus_suspended) {
-        return;
-    }
-    
+  
     [model setOperation:nil];
     
-    __weak typeof(self) weakSelf = self;
-   
+//    __weak typeof(self) weakSelf = self;
+
     if (model.operation == nil) {
         model.operation = [[HJDownloadOperation alloc] initWithDownloadModel:model andSession:self.backgroundSession];
-        model.operation.downloadStatusChangedBlock = ^{
-            [weakSelf saveData];
-        };
+//        model.operation.downloadStatusChangedBlock = ^{
+//            [weakSelf saveData];
+//        };
         [self.queue addOperation:model.operation];
         
     }else{
         
-        if (model.operation.downloadStatusChangedBlock) {
-            model.operation.session = self.backgroundSession;
-            model.operation.downloadStatusChangedBlock = ^{
-                [weakSelf saveData];
-            };
-        }
+//        if (model.operation.downloadStatusChangedBlock) {
+//            model.operation.session = self.backgroundSession;
+//            model.operation.downloadStatusChangedBlock = ^{
+//                [weakSelf saveData];
+//            };
+//        }
         [model.operation resume];
     }
+
 }
 
 - (void)stopWithDownloadModel:(HJDownloadModel *)model{
-    
+   
     if (model.status != kHJDownloadStatusCompleted) {
         
         [model.operation cancel];
@@ -193,34 +207,44 @@ static id instace = nil;
 
 
 - (void)startWithDownloadModels:(NSArray<HJDownloadModel *> *)downloadModels{
-    
+    NSLog(@">>>%@前 operationCount = %zd", NSStringFromSelector(_cmd),self.queue.operationCount);
+    [self.queue setSuspended:NO];
     [self addDownloadModels:downloadModels];
-    
     [self operateTasksWithOperationType:kHJOperationType_startAll];
+    NSLog(@"<<<%@后 operationCount = %zd",NSStringFromSelector(_cmd),self.queue.operationCount);
 }
 
 
 
 - (void)suspendAll{
     
+    NSLog(@">>>%@前 operationCount = %zd", NSStringFromSelector(_cmd),self.queue.operationCount);
+    [self.queue setSuspended:YES];
     [self operateTasksWithOperationType:kHJOperationType_suspendAll];
+    [self.queue cancelAllOperations];
+    NSLog(@"<<<%@后 operationCount = %zd",NSStringFromSelector(_cmd),self.queue.operationCount);
 }
 
 
 
 - (void)resumeAll{
     
+    NSLog(@">>>%@前 operationCount = %zd", NSStringFromSelector(_cmd),self.queue.operationCount);
+    [self.queue setSuspended:NO];
     [self operateTasksWithOperationType:kHJOperationType_resumeAll];
+    NSLog(@"<<<%@后 operationCount = %zd",NSStringFromSelector(_cmd),self.queue.operationCount);
 }
 
 
 
 - (void)stopAll{
     
-//    [self operateTasksWithOperationType:kHJOperationType_stopAll];
+    NSLog(@">>>%@前 operationCount = %zd", NSStringFromSelector(_cmd),self.queue.operationCount);
     [self.queue cancelAllOperations];
-    [self.downloadModels removeAllObjects];
+    [self operateTasksWithOperationType:kHJOperationType_stopAll];
     [self removeAllFiles];
+    [self.downloadModels removeAllObjects];
+    NSLog(@"<<<%@后 operationCount = %zd",NSStringFromSelector(_cmd),self.queue.operationCount);
 }
 
 /**
@@ -373,7 +397,7 @@ static id instace = nil;
                 [weakSelf startWithDownloadModel:downloadModel];
                 break;
             case kHJOperationType_suspendAll:
-                [weakSelf suspendWithDownloadModel:downloadModel];
+                [weakSelf suspendWithDownloadModel:downloadModel forAll:YES];
                 break;
             case kHJOperationType_resumeAll:
                 [weakSelf startWithDownloadModel:downloadModel];
@@ -523,6 +547,10 @@ static id instace = nil;
  */
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data
 {
+ 
+    if (!dataTask.downloadModel) {
+        return;
+    }
     
     HJDownloadModel *downloadModel = dataTask.downloadModel;
     
@@ -581,6 +609,13 @@ static id instace = nil;
     
     [[UIApplication sharedApplication] endBackgroundTask:bgTask];
     bgTask = UIBackgroundTaskInvalid;
+}
+
+
+- (void)applicationWillTerminate{
+    
+    [self saveData];
+    
 }
 
 

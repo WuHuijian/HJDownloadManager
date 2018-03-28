@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "HJDownloadTabBar_VC.h"
 #import "HJDownloadManager.h"
+#import "HJUncaughtExceptionHandler.h"
 
 @interface AppDelegate ()
 
@@ -27,6 +28,8 @@
     self.window.rootViewController = tabBarVC;
     
     [[HJDownloadManager sharedManager] setMaxConcurrentOperationCount:3];
+    
+    [HJUncaughtExceptionHandler setDefaultHandler];
     
     return YES;
 }
