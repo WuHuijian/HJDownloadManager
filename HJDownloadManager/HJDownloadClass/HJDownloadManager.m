@@ -114,7 +114,7 @@ static id instace = nil;
 
 - (void)startWithDownloadModel:(HJDownloadModel *)model{
 
-    if (model.status == kHJDownloadStatusCompleted || model.status == kHJDownloadStatus_Running) {
+    if (model.status == kHJDownloadStatusCompleted) {
         return;
     }
 
@@ -240,7 +240,7 @@ static id instace = nil;
 - (void)stopAll{
     
     NSLog(@">>>%@前 operationCount = %zd", NSStringFromSelector(_cmd),self.queue.operationCount);
-    [self operateTasksWithOperationType:kHJOperationType_stopAll];
+    [self suspendAll];
     [self.queue cancelAllOperations];
     [self removeAllFiles];
     [self.downloadModels removeAllObjects];
