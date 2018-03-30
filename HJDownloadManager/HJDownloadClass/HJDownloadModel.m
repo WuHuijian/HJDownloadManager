@@ -46,7 +46,7 @@ MJCodingImplementation
     if (_progress != progress) {
         _progress = progress;
     }
-     NSLog(@"%@%@==%@==%.1f%%",self.fileName,self.fileFormat,self.statusText,progress*100*1.0);
+//     NSLog(@"%@%@==%@==%.1f%%",self.fileName,self.fileFormat,self.statusText,progress*100*1.0);
     if (self.progressChanged) {
         self.progressChanged(self);
     }

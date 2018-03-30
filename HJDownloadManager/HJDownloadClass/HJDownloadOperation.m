@@ -154,32 +154,25 @@ MJCodingImplementation
         switch (newState) {
             case NSURLSessionTaskStateSuspended:
                 self.downloadModel.status = kHJDownloadStatus_suspended;
-                NSLog(@"NSURLSessionTaskState==NSURLSessionTaskStateSuspended");
                 //为进行任务管理 暂停任务后 直接取消
                 [self cancel];
                 break;
             case NSURLSessionTaskStateCompleted:{
-                
-                NSLog(@"NSURLSessionTaskState==NSURLSessionTaskStateCompleted");
                 if (self.downloadModel.isFinished) {
                     self.downloadModel.status = kHJDownloadStatusCompleted;
                     // 关闭流
                     [self cancel];
                 }else{
-                    NSLog(@"NSURLSessionTaskState==kHJDownloadStatusFailed");
                     if (self.downloadModel.status == kHJDownloadStatus_suspended) {
-                        
                     }else{// 下载失败
                         self.downloadModel.status = kHJDownloadStatusFailed;
                     }
                 }
             }break;
             case NSURLSessionTaskStateRunning:
-                NSLog(@"NSURLSessionTaskState==NSURLSessionTaskStateRunning");
                 self.downloadModel.status = kHJDownloadStatus_Running;
                 break;
             case NSURLSessionTaskStateCanceling:
-                NSLog(@"NSURLSessionTaskState==NSURLSessionTaskStateCanceling");
              
                 break;
             default:
