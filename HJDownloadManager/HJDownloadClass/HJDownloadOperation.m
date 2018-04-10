@@ -19,8 +19,11 @@ BLOCK();\
     
     BOOL _executing;
     BOOL _finished;
-    
 }
+
+@property (nonatomic, strong) NSLock *lock;
+
+@property (nonatomic, assign) BOOL taskIsFinished;
 
 @end
 
@@ -79,8 +82,8 @@ MJCodingImplementation
 }
 
 // 进行检索获取Key
-- (BOOL)observerKeyPath:(NSString *)key observer:(id )observer
-{
+- (BOOL)observerKeyPath:(NSString *)key observer:(id )observer{
+    
     id info = self.downloadTask.observationInfo;
     NSArray *array = [info valueForKey:@"_observances"];
     for (id objc in array) {
@@ -112,16 +115,24 @@ MJCodingImplementation
     }
 }
 
+/** 挂起任务 */
 - (void)suspend{
+    
+    NSLog(@"%@: currentThread = %@", NSStringFromSelector(_cmd), [NSThread currentThread]);
     
     kKVOBlock(kIsExecuting, ^{
         [self.downloadTask suspend];
         _executing = NO;
     });
-    
 }
 
+/** 恢复任务 */
 - (void)resume{
+    
+    NSLog(@"%@: currentThread = %@", NSStringFromSelector(_cmd), [NSThread currentThread]);
+    
+    //避免重复执行任务
+    if (_executing) return;
     
     kKVOBlock(kIsExecuting, ^{
         [self startRequest];
@@ -130,6 +141,7 @@ MJCodingImplementation
 }
 
 
+/** 任务已完成 */
 - (void)completeOperation{
     
     [self willChangeValueForKey:kIsFinished];
@@ -144,9 +156,8 @@ MJCodingImplementation
 
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context{
-    
+
     if ([keyPath isEqualToString:@"state"]) {
-        
         
         NSInteger newState = [[change objectForKey:@"new"] integerValue];
         NSInteger oldState = [[change objectForKey:@"old"] integerValue];
@@ -155,13 +166,10 @@ MJCodingImplementation
             case NSURLSessionTaskStateSuspended:
                 self.downloadModel.status = kHJDownloadStatus_suspended;
                 //为进行任务管理 暂停任务后 直接取消
-                [self cancel];
                 break;
             case NSURLSessionTaskStateCompleted:{
                 if (self.downloadModel.isFinished) {
                     self.downloadModel.status = kHJDownloadStatusCompleted;
-                    // 关闭流
-                    [self cancel];
                 }else{
                     if (self.downloadModel.status == kHJDownloadStatus_suspended) {
                     }else{// 下载失败
@@ -173,7 +181,7 @@ MJCodingImplementation
                 self.downloadModel.status = kHJDownloadStatus_Running;
                 break;
             case NSURLSessionTaskStateCanceling:
-             
+                self.taskIsFinished = YES;
                 break;
             default:
                 break;
@@ -187,17 +195,53 @@ MJCodingImplementation
     }
 }
 
-#pragma mark - Override Method
+
+
+#pragma mark - Override Methods
 - (void)start{
-    
+   
+    self.lock = [[NSLock alloc] init];
+    [self.lock lock];
     //重写start方法时，要做好isCannelled的判断
-    if (self.cancelled) {
-        [self completeOperation];
+    if ([self isCancelled]){
+        //若已取消则设置状态已完成
+        kKVOBlock(kIsFinished, ^{
+            _finished = YES;
+        });
         return;
     }
     
-    [self resume];
+    //未取消则调用main方法来执行任务
+    //经测试 加入operationQueue中后会自动开启新的线程执行 无需手动开启
+    [NSThread currentThread].name = self.downloadModel.downloadDesc;
+    [NSThread mainThread].name = @"主线程";
+    [self main];
+    [self.lock unlock];
+}
 
+
+- (void)main{
+    
+    @try {
+        // 必须为自定义的 operation 提供 autorelease pool，因为 operation 完成后需要销毁。
+        @autoreleasepool {
+            // 提供一个变量标识，来表示需要执行的操作是否完成了，当然，没开始执行之前，为NO
+            _taskIsFinished = NO;
+            
+            //只有当没有执行完成和没有被取消，才执行自定义的相应操作
+            if (self.taskIsFinished == NO && [self isCancelled] == NO) {
+                [self resume];
+            }
+        
+            while(self.taskIsFinished == NO && [self isCancelled] == NO){
+                //任务完成后设置taskIsFinished = YES; 则循环结束
+            }
+            //设置任务完成状态
+            [self completeOperation];
+        }
+    }@catch (NSException * e) {
+        NSLog(@"Exception %@", e);
+    }
 }
 
 - (BOOL)isExecuting{
@@ -213,25 +257,21 @@ MJCodingImplementation
     return YES;
 }
 
+- (BOOL)isAsynchronous{
+    return YES;
+}
 /**
  *  cancel方法调用后 该operation将会取消并从queue中移除，若队列中有等待中的任务，将会自动执行
  */
 - (void)cancel{
+    
     kKVOBlock(kIsCancelled, ^{
-        [super cancel];
         [self.downloadTask cancel];
         [self removeObserver];
-        [self.downloadModel.stream close];
-        self.downloadModel.stream = nil;
-        self.downloadTask = nil;
+        [super cancel];
     });
-    
-    //start方法没做任务取消监控 所以任务取消后手动调用
-    [self start];
 }
-
-
-#pragma mark - Private Method
+#pragma mark - Private Methods
 
 @end
 

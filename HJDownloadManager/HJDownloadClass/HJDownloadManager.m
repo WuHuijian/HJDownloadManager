@@ -120,26 +120,13 @@ static id instace = nil;
 
     [self addDownloadModel:model];
     
-    [model setOperation:nil];
-    
-//    __weak typeof(self) weakSelf = self;
-    
     if (model.operation == nil) {
         model.operation = [[HJDownloadOperation alloc] initWithDownloadModel:model andSession:self.backgroundSession];
-//        model.operation.downloadStatusChangedBlock = ^{
-//            [weakSelf saveData];
-//        };
         [self.queue addOperation:model.operation];
         
     }else{
-        
-        if (model.operation.downloadStatusChangedBlock) {
-            model.operation.session = self.backgroundSession;
-//            model.operation.downloadStatusChangedBlock = ^{
-//                [weakSelf saveData];
-//            };
-        }
-        [model.operation resume];
+
+        [self resumeWithDownloadModel:model];
     }
 }
 
@@ -154,9 +141,9 @@ static id instace = nil;
         if (model.status == kHJDownloadStatus_Running) {//下载中 则暂停
             [model.operation suspend];
         }
-        else if (model.status == kHJDownloadStatusWaiting){//等待中 则取消
-            [model.operation cancel];
-        }
+//        else if (model.status == kHJDownloadStatusWaiting){//等待中 则取消
+//            [model.operation cancel];
+//        }
     }else{
         if (model.status == kHJDownloadStatus_Running) {
             [model.operation suspend];
@@ -170,42 +157,45 @@ static id instace = nil;
     if (model.status == kHJDownloadStatusCompleted || model.status == kHJDownloadStatus_Running) {
         return;
     }
-  
-    [model setOperation:nil];
-    
-//    __weak typeof(self) weakSelf = self;
 
     if (model.operation == nil) {
         model.operation = [[HJDownloadOperation alloc] initWithDownloadModel:model andSession:self.backgroundSession];
-//        model.operation.downloadStatusChangedBlock = ^{
-//            [weakSelf saveData];
-//        };
         [self.queue addOperation:model.operation];
-        
     }else{
-        
-//        if (model.operation.downloadStatusChangedBlock) {
-//            model.operation.session = self.backgroundSession;
-//            model.operation.downloadStatusChangedBlock = ^{
-//                [weakSelf saveData];
-//            };
-//        }
+        model.operation.session = self.backgroundSession;
         [model.operation resume];
     }
-
 }
 
 - (void)stopWithDownloadModel:(HJDownloadModel *)model{
    
+    [self stopWithDownloadModel:model forAll:NO];
+}
+
+- (void)stopWithDownloadModel:(HJDownloadModel *)model forAll:(BOOL)forAll{
+    
     if (model.status != kHJDownloadStatusCompleted) {
-        
         [model.operation cancel];
     }
     
-    [self removeDownloadModelWithModel:model];
+    //移除对应的下载文件
+    NSError *error = nil;
+    [kFileManager removeItemAtPath:model.destinationPath error:&error];
+    if (error) {
+        NSLog(@"Tip:下载文件移除失败，%@",error);
+    }else{
+        NSLog(@"Tip:下载文件移除成功");
+    }
+    
+    //释放operation
+    model.operation = nil;
+    
+    //单个删除 则直接从数组中移除下载模型 否则等清空文件后统一移除
+    if(!forAll){
+        [self.downloadModels removeObject:model];
+    }
+    
 }
-
-
 
 - (void)startWithDownloadModels:(NSArray<HJDownloadModel *> *)downloadModels{
     NSLog(@">>>%@前 operationCount = %zd", NSStringFromSelector(_cmd),self.queue.operationCount);
@@ -240,10 +230,10 @@ static id instace = nil;
 - (void)stopAll{
     
     NSLog(@">>>%@前 operationCount = %zd", NSStringFromSelector(_cmd),self.queue.operationCount);
-    [self suspendAll];
     [self.queue cancelAllOperations];
-    [self removeAllFiles];
+    [self operateTasksWithOperationType:kHJOperationType_stopAll];
     [self.downloadModels removeAllObjects];
+    [self removeAllFiles];
     NSLog(@"<<<%@后 operationCount = %zd",NSStringFromSelector(_cmd),self.queue.operationCount);
 }
 
@@ -347,22 +337,6 @@ static id instace = nil;
     return nil;
 }
 
-- (void)removeDownloadModelWithModel:(HJDownloadModel *)downloadModel{
-
-        NSError *error = nil;
-    
-        [kFileManager removeItemAtPath:downloadModel.destinationPath error:&error];
-        if (error) {
-            NSLog(@"Tip:下载文件移除失败，%@",error);
-        }else{
-            NSLog(@"Tip:下载文件移除成功");
-        }
-        [self.downloadModels removeObject:downloadModel];
-    
-        [self saveData];
-}
-
-
 /**
  *  移除目录中所有文件
  */
@@ -389,21 +363,21 @@ static id instace = nil;
 
 #pragma mark - Private Method
 - (void)operateTasksWithOperationType:(HJOperationType)operationType{
-    __weak typeof(self) weakSelf = self;
+
     [self.downloadModels enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         HJDownloadModel *downloadModel = obj;
         switch (operationType) {
             case kHJOperationType_startAll:
-                [weakSelf startWithDownloadModel:downloadModel];
+                [self startWithDownloadModel:downloadModel];
                 break;
             case kHJOperationType_suspendAll:
-                [weakSelf suspendWithDownloadModel:downloadModel forAll:YES];
+                [self suspendWithDownloadModel:downloadModel forAll:YES];
                 break;
             case kHJOperationType_resumeAll:
-                [weakSelf resumeWithDownloadModel:downloadModel];
+                [self resumeWithDownloadModel:downloadModel];
                 break;
             case kHJOperationType_stopAll:
-          
+                [self stopWithDownloadModel:downloadModel forAll:YES];
                 break;
             default:
                 break;
@@ -536,9 +510,7 @@ static id instace = nil;
     NSInteger totalLength = [response.allHeaderFields[@"Content-Length"] integerValue] + downloadModel.fileDownloadSize;
     downloadModel.fileTotalSize = totalLength;
     
-    [self saveData];
     // 接收这个请求，允许接收服务器的数据
-    
     completionHandler(NSURLSessionResponseAllow);
 }
 
@@ -547,7 +519,7 @@ static id instace = nil;
  */
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data
 {
- 
+
     if (!dataTask.downloadModel) {
         return;
     }
@@ -576,7 +548,10 @@ static id instace = nil;
  */
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error
 {
-    
+    HJDownloadModel *downloadModel = task.downloadModel;
+    [downloadModel.stream close];
+    downloadModel.stream = nil;
+    task = nil;
 }
 
 

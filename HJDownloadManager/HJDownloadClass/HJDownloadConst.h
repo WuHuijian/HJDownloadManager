@@ -24,7 +24,7 @@
 
 
 // 下载operation最大并发数
-#define HJDownloadMaxConcurrentOperationCount  5
+#define HJDownloadMaxConcurrentOperationCount  3
 
 
 
