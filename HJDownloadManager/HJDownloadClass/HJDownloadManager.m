@@ -140,10 +140,9 @@ static id instace = nil;
     if (forAll) {//暂停全部
         if (model.status == kHJDownloadStatus_Running) {//下载中 则暂停
             [model.operation suspend];
+        }else if (model.status == kHJDownloadStatusWaiting){//等待中 则取消
+            [model.operation cancel];
         }
-//        else if (model.status == kHJDownloadStatusWaiting){//等待中 则取消
-//            [model.operation cancel];
-//        }
     }else{
         if (model.status == kHJDownloadStatus_Running) {
             [model.operation suspend];
@@ -157,14 +156,15 @@ static id instace = nil;
     if (model.status == kHJDownloadStatusCompleted || model.status == kHJDownloadStatus_Running) {
         return;
     }
-
-    if (model.operation == nil) {
+    
+    model.operation = nil;
+//    if (model.operation == nil) {
         model.operation = [[HJDownloadOperation alloc] initWithDownloadModel:model andSession:self.backgroundSession];
         [self.queue addOperation:model.operation];
-    }else{
-        model.operation.session = self.backgroundSession;
-        [model.operation resume];
-    }
+//    }else{
+//
+//        [model.operation resume];
+//    }
 }
 
 - (void)stopWithDownloadModel:(HJDownloadModel *)model{
@@ -179,12 +179,14 @@ static id instace = nil;
     }
     
     //移除对应的下载文件
-    NSError *error = nil;
-    [kFileManager removeItemAtPath:model.destinationPath error:&error];
-    if (error) {
-        NSLog(@"Tip:下载文件移除失败，%@",error);
-    }else{
-        NSLog(@"Tip:下载文件移除成功");
+    if([kFileManager fileExistsAtPath:model.destinationPath]){
+        NSError *error = nil;
+        [kFileManager removeItemAtPath:model.destinationPath error:&error];
+        if (error) {
+            NSLog(@"Tip:下载文件移除失败，%@",error);
+        }else{
+            NSLog(@"Tip:下载文件移除成功");
+        }
     }
     
     //释放operation
@@ -230,8 +232,11 @@ static id instace = nil;
 - (void)stopAll{
     
     NSLog(@">>>%@前 operationCount = %zd", NSStringFromSelector(_cmd),self.queue.operationCount);
+    //销毁前暂停队列 防止等待中的任务执行
+    [self.queue setSuspended:YES];
     [self.queue cancelAllOperations];
     [self operateTasksWithOperationType:kHJOperationType_stopAll];
+    [self.queue setSuspended:NO];
     [self.downloadModels removeAllObjects];
     [self removeAllFiles];
     NSLog(@"<<<%@后 operationCount = %zd",NSStringFromSelector(_cmd),self.queue.operationCount);
@@ -520,6 +525,7 @@ static id instace = nil;
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data
 {
 
+    NSLog(@"还在执行！");
     if (!dataTask.downloadModel) {
         return;
     }

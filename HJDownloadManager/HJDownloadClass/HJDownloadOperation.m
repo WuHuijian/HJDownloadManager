@@ -119,20 +119,31 @@ MJCodingImplementation
 - (void)suspend{
     
     NSLog(@"%@: currentThread = %@", NSStringFromSelector(_cmd), [NSThread currentThread]);
-    
+
     kKVOBlock(kIsExecuting, ^{
         [self.downloadTask suspend];
         _executing = NO;
     });
 }
 
-/** 恢复任务 */
-- (void)resume{
+/** 开始执行任务 */
+- (void)startExcuting{
     
     NSLog(@"%@: currentThread = %@", NSStringFromSelector(_cmd), [NSThread currentThread]);
     
-    //避免重复执行任务
-    if (_executing) return;
+    kKVOBlock(kIsExecuting, ^{
+        [self startRequest];
+        _executing = YES;
+    });
+}
+
+
+/** 开始执行任务 */
+- (void)resume{
+    
+    //等待中的任务交给队列调度
+    if (self.downloadModel.status == kHJDownloadStatusWaiting)
+        return;
     
     kKVOBlock(kIsExecuting, ^{
         [self startRequest];
@@ -166,6 +177,7 @@ MJCodingImplementation
             case NSURLSessionTaskStateSuspended:
                 self.downloadModel.status = kHJDownloadStatus_suspended;
                 //为进行任务管理 暂停任务后 直接取消
+                [self cancel];
                 break;
             case NSURLSessionTaskStateCompleted:{
                 if (self.downloadModel.isFinished) {
@@ -211,6 +223,10 @@ MJCodingImplementation
         return;
     }
     
+    kKVOBlock(kIsExecuting, ^{
+        _executing = YES;
+    });
+    
     //未取消则调用main方法来执行任务
     //经测试 加入operationQueue中后会自动开启新的线程执行 无需手动开启
     [NSThread currentThread].name = self.downloadModel.downloadDesc;
@@ -230,7 +246,7 @@ MJCodingImplementation
             
             //只有当没有执行完成和没有被取消，才执行自定义的相应操作
             if (self.taskIsFinished == NO && [self isCancelled] == NO) {
-                [self resume];
+                [self startExcuting];
             }
         
             while(self.taskIsFinished == NO && [self isCancelled] == NO){
@@ -264,14 +280,11 @@ MJCodingImplementation
  *  cancel方法调用后 该operation将会取消并从queue中移除，若队列中有等待中的任务，将会自动执行
  */
 - (void)cancel{
-    
-    kKVOBlock(kIsCancelled, ^{
-        [self.downloadTask cancel];
-        [self removeObserver];
-        [super cancel];
-    });
+    [self.downloadTask cancel];
+    [self removeObserver];
+    [super cancel];
+//    [self completeOperation];
 }
 #pragma mark - Private Methods
-
 @end
 
