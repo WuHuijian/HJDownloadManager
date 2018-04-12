@@ -59,6 +59,8 @@ static const CGFloat kListCellHeight = 58.f;
 
 - (void)layoutSubviews{
     
+    [super layoutSubviews];
+    
     self.titleLabel.frame = CGRectMake(10, 10, 200, 20);
     
     self.fileFormatLabel.frame = CGRectMake(CGRectGetMaxX(self.titleLabel.frame)+20, 10, 100, 20);
@@ -90,6 +92,7 @@ static const CGFloat kListCellHeight = 58.f;
     //文件格式
     self.fileFormatLabel.text = [NSString stringWithFormat:@"文件格式:%@", self.downloadModel.fileFormat];
     
+    [self setNeedsLayout];
 }
 
 #pragma mark - Public Method
