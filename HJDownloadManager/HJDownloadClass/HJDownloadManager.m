@@ -120,14 +120,14 @@ static id instace = nil;
 
     [self addDownloadModel:model];
     
-    if (model.operation == nil) {
+//    if (model.operation == nil) {
         model.operation = [[HJDownloadOperation alloc] initWithDownloadModel:model andSession:self.backgroundSession];
         [self.queue addOperation:model.operation];
         
-    }else{
-
-        [self resumeWithDownloadModel:model];
-    }
+//    }else{
+//
+//        [self resumeWithDownloadModel:model];
+//    }
 }
 
 - (void)suspendWithDownloadModel:(HJDownloadModel *)model{
@@ -148,23 +148,25 @@ static id instace = nil;
             [model.operation suspend];
         }
     }
+    
+    model.operation = nil;
 }
 
 
 - (void)resumeWithDownloadModel:(HJDownloadModel *)model{
     
-    if (model.status == kHJDownloadStatusCompleted || model.status == kHJDownloadStatus_Running) {
+    if (model.status == kHJDownloadStatusCompleted ||
+        model.status == kHJDownloadStatus_Running) {
         return;
     }
     
-    model.operation = nil;
-//    if (model.operation == nil) {
-        model.operation = [[HJDownloadOperation alloc] initWithDownloadModel:model andSession:self.backgroundSession];
-        [self.queue addOperation:model.operation];
-//    }else{
-//
-//        [model.operation resume];
-//    }
+    if (model.status == kHJDownloadStatusWaiting && model.operation) {
+        return;
+    }
+    
+    model.operation = [[HJDownloadOperation alloc] initWithDownloadModel:model andSession:self.backgroundSession];
+    [self.queue addOperation:model.operation];
+
 }
 
 - (void)stopWithDownloadModel:(HJDownloadModel *)model{

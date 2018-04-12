@@ -182,6 +182,7 @@ MJCodingImplementation
             case NSURLSessionTaskStateCompleted:{
                 if (self.downloadModel.isFinished) {
                     self.downloadModel.status = kHJDownloadStatusCompleted;
+                    [self cancel];
                 }else{
                     if (self.downloadModel.status == kHJDownloadStatus_suspended) {
                     }else{// 下载失败
