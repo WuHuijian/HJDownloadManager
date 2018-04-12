@@ -22,7 +22,6 @@ typedef NS_ENUM(NSUInteger, HJOperationType) {
 
 @interface HJDownloadManager : NSObject
 
-
 @property (nonatomic, strong, readonly) NSMutableArray * downloadModels;
 
 @property (nonatomic, strong, readonly) NSMutableArray * completeModels;
@@ -35,10 +34,21 @@ typedef NS_ENUM(NSUInteger, HJOperationType) {
 
 @property (nonatomic, assign) NSInteger maxConcurrentOperationCount;
 
+/** 是否禁用进度打印日志 */
+@property (readonly, nonatomic, assign) BOOL enableProgressLog;
 
+#pragma mark - 单例方法
 + (instancetype)sharedManager;
+/**
+ *  禁止打印进度日志
+ */
+- (void)enableProgressLog:(BOOL)enable;
+/**
+ *  获取下载模型
+ */
+- (HJDownloadModel *)downloadModelWithUrl:(NSString *)url;
 
-#pragma mark - 单下载任务控制
+#pragma mark - 单任务下载控制
 /**
  *  开始下载
  */
@@ -56,40 +66,24 @@ typedef NS_ENUM(NSUInteger, HJOperationType) {
  */
 - (void)stopWithDownloadModel:(HJDownloadModel *)model;
 
-#pragma mark - 多下载任务控制
+#pragma mark - 多任务下载控制
+/**
+ *  批量下载操作
+ */
 - (void)startWithDownloadModels:(NSArray<HJDownloadModel *> *)downloadModels;
-
+/**
+ *  暂停所有下载任务
+ */
 - (void)suspendAll;
-
+/**
+ *  恢复下载任务（进行中、已完成、等待中除外）
+ */
 - (void)resumeAll;
-
+/**
+ *  停止并删除下载任务
+ */
 - (void)stopAll;
 
 
-
-
-/**
- *  获取下载模型
- */
-- (HJDownloadModel *)downloadModelWithUrl:(NSString *)url;
-
-
-
-#pragma mark - 文件操作相关
-/**
- *  保存数据
- */
-- (void)saveData;
-
-/**
- *  移除目录下所有文件
- */
-- (void)removeAllFiles;
-
-
-#pragma mark - 后台任务相关
-- (void)getBackgroundTask;
-
-- (void)endBackgroundTask;
 
 @end

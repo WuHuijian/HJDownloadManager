@@ -45,7 +45,7 @@ MJCodingImplementation
     if (self) {
         self.downloadModel = downloadModel;
         self.session = session;
-        self.downloadModel.status = kHJDownloadStatusWaiting;
+        self.downloadModel.status = kHJDownloadStatus_Waiting;
     }
     return self;
 }
@@ -142,7 +142,7 @@ MJCodingImplementation
 - (void)resume{
     
     //等待中的任务交给队列调度
-    if (self.downloadModel.status == kHJDownloadStatusWaiting)
+    if (self.downloadModel.status == kHJDownloadStatus_Waiting)
         return;
     
     kKVOBlock(kIsExecuting, ^{
@@ -175,18 +175,18 @@ MJCodingImplementation
     
         switch (newState) {
             case NSURLSessionTaskStateSuspended:
-                self.downloadModel.status = kHJDownloadStatus_suspended;
+                self.downloadModel.status = kHJDownloadStatus_Suspended;
                 //为进行任务管理 暂停任务后 直接取消
                 [self cancel];
                 break;
             case NSURLSessionTaskStateCompleted:{
                 if (self.downloadModel.isFinished) {
-                    self.downloadModel.status = kHJDownloadStatusCompleted;
+                    self.downloadModel.status = kHJDownloadStatus_Completed;
                     [self cancel];
                 }else{
-                    if (self.downloadModel.status == kHJDownloadStatus_suspended) {
+                    if (self.downloadModel.status == kHJDownloadStatus_Suspended) {
                     }else{// 下载失败
-                        self.downloadModel.status = kHJDownloadStatusFailed;
+                        self.downloadModel.status = kHJDownloadStatus_Failed;
                     }
                 }
             }break;

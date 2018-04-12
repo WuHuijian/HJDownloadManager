@@ -27,5 +27,4 @@
 #define HJDownloadMaxConcurrentOperationCount  3
 
 
-
 #endif /* HJDownloadConst_h */

@@ -28,8 +28,9 @@
     self.window.rootViewController = tabBarVC;
     
     [[HJDownloadManager sharedManager] setMaxConcurrentOperationCount:3];
+    [[HJDownloadManager sharedManager] enableProgressLog:NO];
     
-    [HJUncaughtExceptionHandler setDefaultHandler];
+    
     
     return YES;
 }

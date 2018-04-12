@@ -46,7 +46,11 @@ MJCodingImplementation
     if (_progress != progress) {
         _progress = progress;
     }
-//     NSLog(@"%@%@==%@==%.1f%%",self.fileName,self.fileFormat,self.statusText,progress*100*1.0);
+    
+    if ([kHJDownloadManager enableProgressLog]) {
+        NSLog(@"%@%@==%@==%.1f%%",self.fileName,self.fileFormat,self.statusText,progress*100*1.0);
+    }
+    
     if (self.progressChanged) {
         self.progressChanged(self);
     }
@@ -88,19 +92,19 @@ MJCodingImplementation
         case kHJDownloadStatus_Running:
             self.statusText = @"正在下载";
             break;
-        case kHJDownloadStatus_suspended:
+        case kHJDownloadStatus_Suspended:
             self.statusText = @"暂停下载";
             break;
-        case kHJDownloadStatusFailed:
+        case kHJDownloadStatus_Failed:
             self.statusText = @"下载失败";
             break;
-        case kHJDownloadStatusCancel:
+        case kHJDownloadStatus_Cancel:
             self.statusText = @"取消下载";
             break;
-        case kHJDownloadStatusWaiting:
+        case kHJDownloadStatus_Waiting:
             self.statusText = @"等待下载";
             break;
-        case kHJDownloadStatusCompleted:
+        case kHJDownloadStatus_Completed:
             self.statusText = @"下载完成";
             break;
         default:

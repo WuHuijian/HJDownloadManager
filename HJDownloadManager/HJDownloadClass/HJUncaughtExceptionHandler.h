@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
+
+static NSString * const kNotificationUncaughtException = @"kNotificationUncaughtException";
+
 @interface HJUncaughtExceptionHandler : NSObject
 
 + (void)setDefaultHandler;

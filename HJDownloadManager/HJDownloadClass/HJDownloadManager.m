@@ -7,6 +7,7 @@
 //
 
 #import "HJDownloadManager.h"
+#import "HJUncaughtExceptionHandler.h"
 #import "AppDelegate.h"
 
 @interface HJDownloadManager ()<NSURLSessionDataDelegate>{
@@ -14,6 +15,7 @@
     NSMutableArray *_completeModels;
     NSMutableArray *_downloadingModels;
     NSMutableArray *_pauseModels;
+    BOOL            _enableProgressLog;
 }
 
 
@@ -37,6 +39,8 @@ static id instace = nil;
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
             instace = [super allocWithZone:zone];
+            // 添加未捕获异常的监听
+            [instace handleUncaughtExreption];
             // 添加监听
             [instace addObservers];
             // 创建缓存目录
@@ -79,6 +83,8 @@ static id instace = nil;
     [[NSNotificationCenter defaultCenter] addObserver:instace selector:@selector(endBackgroundTask) name:UIApplicationWillEnterForegroundNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:instace selector:@selector(getBackgroundTask) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:instace selector:@selector(getBackgroundTask) name:kNotificationUncaughtException object:nil];
 }
 
 /**
@@ -93,14 +99,29 @@ static id instace = nil;
     NSLog(@"创建缓存目录:%@",HJCachesDirectory);
 }
 
-#pragma mark - 下载控制
+/**
+ *  添加未捕获异常的监听
+ */
+- (void)handleUncaughtExreption{
+    
+    [HJUncaughtExceptionHandler setDefaultHandler];
+}
+
+/**
+ *  禁止打印进度日志
+ */
+- (void)enableProgressLog:(BOOL)enable{
+    
+    _enableProgressLog = enable;
+}
+
+#pragma mark - 模型相关
 - (void)addDownloadModel:(HJDownloadModel *)model{
     if (![self checkExistWithDownloadModel:model]) {
         [self.downloadModels addObject:model];
         NSLog(@"下载模型添加成功");
     }
 }
-
 
 - (void)addDownloadModels:(NSArray<HJDownloadModel *> *)models{
     if ([models isKindOfClass:[NSArray class]]) {
@@ -110,26 +131,40 @@ static id instace = nil;
     }
 }
 
+-(BOOL)checkExistWithDownloadModel:(HJDownloadModel *)model{
+    
+    for (HJDownloadModel *tmpModel in self.downloadModels) {
+        if ([tmpModel.urlString isEqualToString:model.urlString]) {
+            NSLog(@"Tip:下载数据模型已存在");
+            return YES;
+        }
+    }
+    return NO;
+}
 
 
+- (HJDownloadModel *)downloadModelWithUrl:(NSString *)url{
+    for (HJDownloadModel *tmpModel in self.downloadModels) {
+        if ([url isEqualToString:tmpModel.urlString]) {
+            return tmpModel;
+        }
+    }
+    return nil;
+}
+#pragma mark - 单任务下载控制
 - (void)startWithDownloadModel:(HJDownloadModel *)model{
 
-    if (model.status == kHJDownloadStatusCompleted) {
+    if (model.status == kHJDownloadStatus_Completed) {
         return;
     }
 
     [self addDownloadModel:model];
     
-//    if (model.operation == nil) {
-        model.operation = [[HJDownloadOperation alloc] initWithDownloadModel:model andSession:self.backgroundSession];
-        [self.queue addOperation:model.operation];
-        
-//    }else{
-//
-//        [self resumeWithDownloadModel:model];
-//    }
+    model.operation = [[HJDownloadOperation alloc] initWithDownloadModel:model andSession:self.backgroundSession];
+    [self.queue addOperation:model.operation];
 }
 
+//暂停后操作将销毁 若想继续执行 则需重新创建operation并添加
 - (void)suspendWithDownloadModel:(HJDownloadModel *)model{
     
     [self suspendWithDownloadModel:model forAll:NO];
@@ -140,7 +175,7 @@ static id instace = nil;
     if (forAll) {//暂停全部
         if (model.status == kHJDownloadStatus_Running) {//下载中 则暂停
             [model.operation suspend];
-        }else if (model.status == kHJDownloadStatusWaiting){//等待中 则取消
+        }else if (model.status == kHJDownloadStatus_Waiting){//等待中 则取消
             [model.operation cancel];
         }
     }else{
@@ -155,12 +190,12 @@ static id instace = nil;
 
 - (void)resumeWithDownloadModel:(HJDownloadModel *)model{
     
-    if (model.status == kHJDownloadStatusCompleted ||
+    if (model.status == kHJDownloadStatus_Completed ||
         model.status == kHJDownloadStatus_Running) {
         return;
     }
-    
-    if (model.status == kHJDownloadStatusWaiting && model.operation) {
+    //等待中 且操作已在队列中 则无需恢复
+    if (model.status == kHJDownloadStatus_Waiting && model.operation) {
         return;
     }
     
@@ -169,14 +204,18 @@ static id instace = nil;
 
 }
 
+
+
 - (void)stopWithDownloadModel:(HJDownloadModel *)model{
    
     [self stopWithDownloadModel:model forAll:NO];
 }
 
+
+
 - (void)stopWithDownloadModel:(HJDownloadModel *)model forAll:(BOOL)forAll{
     
-    if (model.status != kHJDownloadStatusCompleted) {
+    if (model.status != kHJDownloadStatus_Completed) {
         [model.operation cancel];
     }
     
@@ -198,9 +237,13 @@ static id instace = nil;
     if(!forAll){
         [self.downloadModels removeObject:model];
     }
-    
 }
 
+
+#pragma mark - 批量下载相关
+/**
+ *  批量下载操作
+ */
 - (void)startWithDownloadModels:(NSArray<HJDownloadModel *> *)downloadModels{
     NSLog(@">>>%@前 operationCount = %zd", NSStringFromSelector(_cmd),self.queue.operationCount);
     [self.queue setSuspended:NO];
@@ -209,31 +252,29 @@ static id instace = nil;
     NSLog(@"<<<%@后 operationCount = %zd",NSStringFromSelector(_cmd),self.queue.operationCount);
 }
 
-
-
+/**
+ *  暂停所有下载任务
+ */
 - (void)suspendAll{
     
-    NSLog(@">>>%@前 operationCount = %zd", NSStringFromSelector(_cmd),self.queue.operationCount);
     [self.queue setSuspended:YES];
     [self operateTasksWithOperationType:kHJOperationType_suspendAll];
-    NSLog(@"<<<%@后 operationCount = %zd",NSStringFromSelector(_cmd),self.queue.operationCount);
 }
 
-
-
+/**
+ *  恢复下载任务（进行中、已完成、等待中除外）
+ */
 - (void)resumeAll{
     
-    NSLog(@">>>%@前 operationCount = %zd", NSStringFromSelector(_cmd),self.queue.operationCount);
     [self.queue setSuspended:NO];
     [self operateTasksWithOperationType:kHJOperationType_resumeAll];
-    NSLog(@"<<<%@后 operationCount = %zd",NSStringFromSelector(_cmd),self.queue.operationCount);
 }
 
-
-
+/**
+ *  停止并删除下载任务
+ */
 - (void)stopAll{
     
-    NSLog(@">>>%@前 operationCount = %zd", NSStringFromSelector(_cmd),self.queue.operationCount);
     //销毁前暂停队列 防止等待中的任务执行
     [self.queue setSuspended:YES];
     [self.queue cancelAllOperations];
@@ -241,8 +282,32 @@ static id instace = nil;
     [self.queue setSuspended:NO];
     [self.downloadModels removeAllObjects];
     [self removeAllFiles];
-    NSLog(@"<<<%@后 operationCount = %zd",NSStringFromSelector(_cmd),self.queue.operationCount);
 }
+
+
+- (void)operateTasksWithOperationType:(HJOperationType)operationType{
+    
+    [self.downloadModels enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        HJDownloadModel *downloadModel = obj;
+        switch (operationType) {
+            case kHJOperationType_startAll:
+                [self startWithDownloadModel:downloadModel];
+                break;
+            case kHJOperationType_suspendAll:
+                [self suspendWithDownloadModel:downloadModel forAll:YES];
+                break;
+            case kHJOperationType_resumeAll:
+                [self resumeWithDownloadModel:downloadModel];
+                break;
+            case kHJOperationType_stopAll:
+                [self stopWithDownloadModel:downloadModel forAll:YES];
+                break;
+            default:
+                break;
+        }
+    }];
+}
+
 
 /**
  *  从备份恢复下载数据
@@ -259,7 +324,7 @@ static id instace = nil;
             [self.downloadModels enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 HJDownloadModel *model = (HJDownloadModel *)obj;
                 if (model.status == kHJDownloadStatus_Running ||
-                    model.status == kHJDownloadStatusWaiting){
+                    model.status == kHJDownloadStatus_Waiting){
                     [self startWithDownloadModel:model];
                 }
             }];
@@ -310,7 +375,6 @@ static id instace = nil;
 - (void)removeBackupFile{
     
     if ([kFileManager fileExistsAtPath:HJSavedDownloadModelsBackup]) {
-        
         NSError * error = nil;
         BOOL success = [kFileManager removeItemAtPath:HJSavedDownloadModelsBackup error:&error];
         if (success) {
@@ -319,29 +383,6 @@ static id instace = nil;
             NSLog(@"Tip:备份移除失败，%@",error);
         }
     }
-}
-
-
-
--(BOOL)checkExistWithDownloadModel:(HJDownloadModel *)model{
-    
-    for (HJDownloadModel *tmpModel in self.downloadModels) {
-        if ([tmpModel.urlString isEqualToString:model.urlString]) {
-            NSLog(@"Tip:下载数据模型已存在");
-            return YES;
-        }
-    }
-    return NO;
-}
-
-
-- (HJDownloadModel *)downloadModelWithUrl:(NSString *)url{
-    for (HJDownloadModel *tmpModel in self.downloadModels) {
-        if ([url isEqualToString:tmpModel.urlString]) {
-            return tmpModel;
-        }
-    }
-    return nil;
 }
 
 /**
@@ -354,7 +395,7 @@ static id instace = nil;
     
     for(NSString *p in files){
         NSError*error;
-        
+
         NSString*path = [HJCachesDirectory stringByAppendingString:[NSString stringWithFormat:@"/%@",p]];
         
         if([[NSFileManager defaultManager] fileExistsAtPath:path]){
@@ -369,28 +410,6 @@ static id instace = nil;
 }
 
 #pragma mark - Private Method
-- (void)operateTasksWithOperationType:(HJOperationType)operationType{
-
-    [self.downloadModels enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        HJDownloadModel *downloadModel = obj;
-        switch (operationType) {
-            case kHJOperationType_startAll:
-                [self startWithDownloadModel:downloadModel];
-                break;
-            case kHJOperationType_suspendAll:
-                [self suspendWithDownloadModel:downloadModel forAll:YES];
-                break;
-            case kHJOperationType_resumeAll:
-                [self resumeWithDownloadModel:downloadModel];
-                break;
-            case kHJOperationType_stopAll:
-                [self stopWithDownloadModel:downloadModel forAll:YES];
-                break;
-            default:
-                break;
-        }
-    }];
-}
 
 #pragma mark - Getters/Setters
 - (NSMutableArray *)downloadModels{
@@ -414,7 +433,7 @@ static id instace = nil;
     if (self.downloadModels) {
         [self.downloadModels enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             HJDownloadModel *model = obj;
-            if (model.status == kHJDownloadStatusCompleted) {
+            if (model.status == kHJDownloadStatus_Completed) {
                 [tmpArr addObject:model];
             }
         }];
@@ -448,7 +467,7 @@ static id instace = nil;
     if (self.downloadModels) {
         [self.downloadModels enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             HJDownloadModel *model = obj;
-            if (model.status == kHJDownloadStatusWaiting) {
+            if (model.status == kHJDownloadStatus_Waiting) {
                 [tmpArr addObject:model];
             }
         }];
@@ -463,7 +482,7 @@ static id instace = nil;
     if (self.downloadModels) {
         [self.downloadModels enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             HJDownloadModel *model = obj;
-            if (model.status == kHJDownloadStatus_suspended) {
+            if (model.status == kHJDownloadStatus_Suspended) {
                 [tmpArr addObject:model];
             }
         }];
@@ -500,6 +519,53 @@ static id instace = nil;
 }
 
 
+- (BOOL)enableProgressLog{
+    
+    return _enableProgressLog;
+}
+
+#pragma mark - 后台任务相关
+/**
+ *  获取后台任务
+ */
+- (void)getBackgroundTask{
+    
+    NSLog(@"getBackgroundTask");
+    UIBackgroundTaskIdentifier tempTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+        
+    }];
+    
+    if (bgTask != UIBackgroundTaskInvalid) {
+        
+        [self endBackgroundTask];
+    }
+    
+    bgTask = tempTask;
+    
+    [self performSelector:@selector(getBackgroundTask) withObject:nil afterDelay:120];
+}
+
+
+/**
+ *  结束后台任务
+ */
+- (void)endBackgroundTask{
+    
+    [[UIApplication sharedApplication] endBackgroundTask:bgTask];
+    bgTask = UIBackgroundTaskInvalid;
+}
+
+
+
+#pragma mark - Event Response
+/**
+ *  应用强关或闪退时 保存下载数据
+ */
+- (void)applicationWillTerminate{
+    
+    [self saveData];
+}
+
 
 #pragma mark - NSURLSessionDataDelegate
 /**
@@ -526,7 +592,7 @@ static id instace = nil;
  */
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data
 {
-
+    
     NSLog(@"还在执行！");
     if (!dataTask.downloadModel) {
         return;
@@ -561,46 +627,5 @@ static id instace = nil;
     downloadModel.stream = nil;
     task = nil;
 }
-
-
-#pragma mark - 后台任务相关
-/**
- *  获取后台任务
- */
-- (void)getBackgroundTask{
-    
-    NSLog(@"getBackgroundTask");
-    UIBackgroundTaskIdentifier tempTask = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
-        
-    }];
-    
-    if (bgTask != UIBackgroundTaskInvalid) {
-        
-        [self endBackgroundTask];
-    }
-    
-    bgTask = tempTask;
-    
-    [self performSelector:@selector(getBackgroundTask) withObject:nil afterDelay:120];
-}
-
-
-/**
- *  结束后台任务
- */
-- (void)endBackgroundTask{
-    
-    [[UIApplication sharedApplication] endBackgroundTask:bgTask];
-    bgTask = UIBackgroundTaskInvalid;
-}
-
-
-- (void)applicationWillTerminate{
-    
-    [self saveData];
-    
-}
-
-
 @end
 

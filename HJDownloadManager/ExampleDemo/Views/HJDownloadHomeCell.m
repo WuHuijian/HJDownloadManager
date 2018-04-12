@@ -41,13 +41,13 @@ static const CGFloat kHomeCellHeight = 53.f;
             [self.downloadBtn setImage:nil forState:UIControlStateNormal];
             NSString *title = [NSString stringWithFormat:@"%zd%%",progressInt];
             [self.downloadBtn setTitle:title forState:UIControlStateNormal];
-        }else if(downloadStatus == kHJDownloadStatus_suspended){
+        }else if(downloadStatus == kHJDownloadStatus_Suspended){
             [self.downloadBtn setImage:[UIImage imageNamed:@"HJ_download_pause"] forState:UIControlStateNormal];
-        }else if(downloadStatus == kHJDownloadStatusCompleted){
+        }else if(downloadStatus == kHJDownloadStatus_Completed){
             [self.downloadBtn setImage:[UIImage imageNamed:@"HJ_download_finished"] forState:UIControlStateNormal];
-        }else if(downloadStatus == kHJDownloadStatusFailed){
+        }else if(downloadStatus == kHJDownloadStatus_Failed){
             [self.downloadBtn setImage:[UIImage imageNamed:@"HJ_download_fail"] forState:UIControlStateNormal];
-        }else if(downloadStatus == kHJDownloadStatusWaiting){
+        }else if(downloadStatus == kHJDownloadStatus_Waiting){
             [self.downloadBtn setImage:[UIImage imageNamed:@"HJ_download_waiting"] forState:UIControlStateNormal];
         }else{
             
@@ -104,20 +104,20 @@ static const CGFloat kHomeCellHeight = 53.f;
         
         [kHJDownloadManager suspendWithDownloadModel:self.downloadModel];
         
-    }else if(downloadStatus == kHJDownloadStatus_suspended){
+    }else if(downloadStatus == kHJDownloadStatus_Suspended){
         
         [kHJDownloadManager resumeWithDownloadModel:self.downloadModel];
         
-    }else if(downloadStatus == kHJDownloadStatusCompleted){
+    }else if(downloadStatus == kHJDownloadStatus_Completed){
     
         
-    }else if(downloadStatus == kHJDownloadStatusFailed){
+    }else if(downloadStatus == kHJDownloadStatus_Failed){
     
         [kHJDownloadManager resumeWithDownloadModel:self.downloadModel];
         
-    }else if(downloadStatus == kHJDownloadStatusWaiting){
+    }else if(downloadStatus == kHJDownloadStatus_Waiting){
       
-    }else if(downloadStatus == kHJDownloadStatusCancel){
+    }else if(downloadStatus == kHJDownloadStatus_Cancel){
         
         [kHJDownloadManager resumeWithDownloadModel:self.downloadModel];
     }

@@ -16,11 +16,11 @@
 typedef NS_ENUM(NSUInteger, HJDownloadStatus) {
     kHJDownloadStatus_None = 0,
     kHJDownloadStatus_Running = 1,
-    kHJDownloadStatus_suspended = 2,
-    kHJDownloadStatusCompleted = 3,  // 下载完成
-    kHJDownloadStatusFailed  = 4,    // 下载失败
-    kHJDownloadStatusWaiting = 5,   // 等待下载
-    kHJDownloadStatusCancel = 6,      // 取消下载
+    kHJDownloadStatus_Suspended = 2,
+    kHJDownloadStatus_Completed = 3,  // 下载完成
+    kHJDownloadStatus_Failed  = 4,    // 下载失败
+    kHJDownloadStatus_Waiting = 5,   // 等待下载
+    kHJDownloadStatus_Cancel = 6,      // 取消下载
 };
 
 
