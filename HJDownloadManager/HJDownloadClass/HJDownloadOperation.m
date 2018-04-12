@@ -270,21 +270,17 @@ MJCodingImplementation
     return _finished;
 }
 
-- (BOOL)isConcurrent{
-    return YES;
-}
-
 - (BOOL)isAsynchronous{
     return YES;
 }
 /**
- *  cancel方法调用后 该operation将会取消并从queue中移除，若队列中有等待中的任务，将会自动执行
+ *  1.cancel方法调用后 该operation将会取消并从queue中移除
+ *  2.若队列中有等待中的任务，将会自动执行
  */
 - (void)cancel{
     [self.downloadTask cancel];
     [self removeObserver];
     [super cancel];
-//    [self completeOperation];
 }
 #pragma mark - Private Methods
 @end

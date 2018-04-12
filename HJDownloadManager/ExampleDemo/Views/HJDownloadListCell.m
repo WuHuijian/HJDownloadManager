@@ -31,6 +31,11 @@ static const CGFloat kListCellHeight = 58.f;
         
         [self.progressView setProgress:progress];
         [self.downloadBtn setTitle:nil forState:UIControlStateNormal];
+        //设置文件下载大小
+        CGFloat downloadSize = downloadModel.fileDownloadSize/1024/1024.f;
+        CGFloat totalSize = downloadModel.fileTotalSize/1024/1024.f;
+        NSString *fileSizeText = [NSString stringWithFormat:@"已下载:%.2fM/总大小:%.2fM",downloadSize,totalSize];
+        self.fileSizeLabel.text = fileSizeText;
         
         if(downloadStatus == kHJDownloadStatus_None){
             [self.downloadBtn setImage:[UIImage imageNamed:@"HJ_download_ready"] forState:UIControlStateNormal];
@@ -55,9 +60,14 @@ static const CGFloat kListCellHeight = 58.f;
 - (void)layoutSubviews{
     
     self.titleLabel.frame = CGRectMake(10, 10, 200, 20);
+    
+    self.fileFormatLabel.frame = CGRectMake(CGRectGetMaxX(self.titleLabel.frame)+20, 10, 100, 20);
+    
     self.fileSizeLabel.frame = CGRectMake(10, CGRectGetMaxY(self.titleLabel.frame)+5, 200, 20);
+    
     self.downloadBtn.frame = CGRectMake(CGRectGetWidth(self.bounds) - kListCellHeight - 10, 0, kListCellHeight, kListCellHeight);
     self.downloadBtn.center = CGPointMake(self.downloadBtn.center.x, self.contentView.center.y);
+    
     self.progressView.frame = CGRectMake(0, 55, CGRectGetWidth(self.bounds), 3.f);
 }
 #pragma mark - Pravite Method
@@ -77,6 +87,9 @@ static const CGFloat kListCellHeight = 58.f;
     };
     
     [self refreshUIWithDownloadModel:self.downloadModel];
+    //文件格式
+    self.fileFormatLabel.text = [NSString stringWithFormat:@"文件格式:%@", self.downloadModel.fileFormat];
+    
 }
 
 #pragma mark - Public Method

@@ -22,6 +22,9 @@
 /** <#describe#> */
 @property (nonatomic, strong) UILabel *fileSizeLabel;
 
+/** <#describe#> */
+@property (nonatomic, strong) UILabel *fileFormatLabel;
+
 
 - (void)downloadAction:(UIButton *)sender;
 

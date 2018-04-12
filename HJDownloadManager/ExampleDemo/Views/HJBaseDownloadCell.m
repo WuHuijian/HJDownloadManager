@@ -33,7 +33,6 @@
     [self.contentView addSubview:self.fileSizeLabel];
     
     [self.contentView addSubview:self.progressView];
-    
 }
 
 
@@ -68,6 +67,19 @@
     }
     return _fileSizeLabel;
 }
+
+
+
+- (UILabel *)fileFormatLabel{
+    
+    if (!_fileFormatLabel) {
+        _fileFormatLabel = [[UILabel alloc] init];
+        _fileFormatLabel.font = [UIFont systemFontOfSize:14.f];
+        [self.contentView addSubview:_fileFormatLabel];
+    }
+    return _fileFormatLabel;
+}
+
 
 - (UIButton *)downloadBtn{
     
