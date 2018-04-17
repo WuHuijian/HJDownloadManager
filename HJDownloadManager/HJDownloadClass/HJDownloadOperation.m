@@ -249,12 +249,7 @@ MJCodingImplementation
             if (self.taskIsFinished == NO && [self isCancelled] == NO) {
                 [self startExcuting];
             }
-        
-            while(self.taskIsFinished == NO && [self isCancelled] == NO){
-                //任务完成后设置taskIsFinished = YES; 则循环结束
-            }
-            //设置任务完成状态
-            [self completeOperation];
+
         }
     }@catch (NSException * e) {
         NSLog(@"Exception %@", e);
@@ -278,9 +273,16 @@ MJCodingImplementation
  *  2.若队列中有等待中的任务，将会自动执行
  */
 - (void)cancel{
+    
+    BOOL isWaiting = self.downloadModel.status == kHJDownloadStatus_Waiting;
     [self.downloadTask cancel];
     [self removeObserver];
     [super cancel];
+    //等待状态下取消时 无需将isFinished设置为已完成  等调用start方法时检测canceled来设置
+    //参考：https://blog.csdn.net/loggerhuang/article/details/50015573
+    if (!isWaiting) {
+        [self completeOperation];
+    }
 }
 #pragma mark - Private Methods
 @end

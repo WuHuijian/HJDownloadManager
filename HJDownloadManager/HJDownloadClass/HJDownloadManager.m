@@ -198,7 +198,7 @@ static id instace = nil;
     if (model.status == kHJDownloadStatus_Waiting && model.operation) {
         return;
     }
-    
+    model.operation = nil;
     model.operation = [[HJDownloadOperation alloc] initWithDownloadModel:model andSession:self.backgroundSession];
     [self.queue addOperation:model.operation];
 
