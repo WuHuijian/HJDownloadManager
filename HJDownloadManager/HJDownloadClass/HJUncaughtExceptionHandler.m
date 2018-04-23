@@ -23,7 +23,7 @@ void UncaughtExceptionHandler(NSException * exception) {
     // 将一个txt文件写入沙盒
     [url writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:nil];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:UIApplicationWillTerminateNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationUncaughtException object:nil];
     
 }
 
