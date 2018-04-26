@@ -84,7 +84,7 @@ static id instace = nil;
     
     [[NSNotificationCenter defaultCenter] addObserver:instace selector:@selector(getBackgroundTask) name:UIApplicationDidEnterBackgroundNotification object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:instace selector:@selector(getBackgroundTask) name:kNotificationUncaughtException object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:instace selector:@selector(applicationWillTerminate) name:kNotificationUncaughtException object:nil];
 }
 
 /**
